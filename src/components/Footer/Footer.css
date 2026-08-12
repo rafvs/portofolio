@@ -1,0 +1,137 @@
+/* Footer / "Kontak" section. A glassmorphic card holding the collaboration CTA
+   and contact links, on the page's purple gradient. Reveals on scroll-into-view. */
+
+.footer {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 5rem 0 3rem;
+  scroll-margin-top: 6rem;
+}
+
+.footer-inner {
+  width: min(980px, calc(100% - 3rem));
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Glass card */
+.footer-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: clamp(2rem, 5vw, 3.5rem);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  box-shadow: 0 30px 80px -40px rgba(124, 58, 237, 0.55);
+
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.footer-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.footer-eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 1rem;
+}
+
+.footer-title {
+  font-size: clamp(1.9rem, 4.2vw, 3rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin: 0;
+  padding-bottom: 0.08em;
+  background: linear-gradient(180deg, #ffffff 0%, #b8b8bd 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.footer-copy {
+  font-size: clamp(0.98rem, 1.6vw, 1.1rem);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 52ch;
+  margin: 1.25rem 0 0;
+}
+
+.footer-cta {
+  margin-top: 2.25rem;
+}
+
+/* Contact links row */
+.footer-links {
+  list-style: none;
+  margin: 2.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  justify-content: center;
+}
+
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease,
+    transform 0.25s ease;
+}
+
+.footer-link:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(124, 58, 237, 0.18);
+  transform: translateY(-2px);
+}
+
+.footer-link__icon {
+  display: inline-flex;
+  font-size: 1.15rem;
+  color: #d4d4d8;
+}
+
+.footer-note {
+  margin: 2.5rem 0 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 900px) {
+  .footer {
+    padding: 4.5rem 0 2.5rem;
+  }
+
+  .footer-inner {
+    width: min(560px, calc(100% - 2.5rem));
+  }
+}

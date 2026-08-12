@@ -1,0 +1,359 @@
+/* Hero two-column layout. Inline styles can't express media queries, so the
+   responsive grid + a couple of entrance transitions live here. Everything
+   else stays inline to match the existing App.jsx style. */
+
+/* --------------------------------------------------------------------------
+   Navbar. Flex layout with a desktop link row, a CTA, and a hamburger that
+   only appears on small screens. The mobile dropdown sits just under the
+   glass pill.
+-------------------------------------------------------------------------- */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 1.5rem;
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  transition: color 0.22s ease;
+}
+
+.nav-link:hover {
+  color: #fff;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Hamburger — hidden on desktop */
+.nav-burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(196, 181, 253, 0.2);
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.nav-burger__bar {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: #fff;
+  transition: transform 0.28s ease, opacity 0.28s ease;
+}
+
+.nav-burger__bar.is-open:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-burger__bar.is-open:nth-child(2) { opacity: 0; }
+.nav-burger__bar.is-open:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile dropdown menu */
+.nav-mobile {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.9rem;
+  border-radius: 20px;
+  background: rgba(13, 7, 22, 0.9);
+  border: 1px solid rgba(196, 181, 253, 0.16);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
+
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.nav-mobile.is-open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.nav-mobile__link {
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 0.7rem 0.9rem;
+  border-radius: 12px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav-mobile__link:hover {
+  color: #fff;
+  background: rgba(124, 58, 237, 0.16);
+}
+
+.nav-mobile__cta {
+  margin-top: 0.5rem;
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: 12px;
+  background: var(--accent-600);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.nav-mobile__cta:hover {
+  background: var(--accent-500);
+}
+
+/* --------------------------------------------------------------------------
+   Hero
+-------------------------------------------------------------------------- */
+.hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 3rem;
+  align-items: center;
+  width: min(1320px, calc(100% - 4rem));
+  margin: 0 auto;
+}
+
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: 1rem 0;
+}
+
+.hero-headline {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 5.5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin: 0;
+  max-width: 16ch;
+  /* Small bottom padding so descenders (g, p, y) aren't clipped by
+     background-clip: text, and wrapping words never overflow their column. */
+  padding-bottom: 0.08em;
+  overflow-wrap: break-word;
+  background: linear-gradient(180deg, #ffffff 0%, #cbb6e6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-sub {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 46ch;
+  margin: 1.5rem 0 0;
+}
+
+/* CTA row fades/slides in after the text animation completes */
+.hero-cta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 2.25rem;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.hero-cta.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Quick-facts row under the CTAs. Fills the otherwise-empty lower-left of the
+   hero and surfaces credibility at a glance. */
+.hero-stats {
+  list-style: none;
+  display: flex;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  margin: 3rem 0 0;
+  padding: 1.5rem 0 0;
+  border-top: 1px solid rgba(196, 181, 253, 0.14);
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s;
+}
+
+.hero-stats.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.hero-stat__value {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #c4b5fd, #8b5cf6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-stat__label {
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* Marquee strip pinned to the base of the hero. Full-bleed (breaks out of the
+   centered column) so it touches both viewport edges. Pure-CSS loop. */
+.hero-marquee {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  padding: 1rem 0;
+  border-top: 1px solid rgba(196, 181, 253, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.hero-marquee__track {
+  display: flex;
+  width: max-content;
+  animation: hero-marquee-scroll 26s linear infinite;
+}
+
+.hero-marquee__set {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.hero-marquee__item {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  padding: 0 1.4rem;
+}
+
+.hero-marquee__item i {
+  font-style: normal;
+  color: var(--accent-400);
+  margin-left: 2.8rem;
+}
+
+@keyframes hero-marquee-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-marquee__track {
+    animation: none;
+  }
+}
+
+/* Bound the reveal box height and center it in the hero row. Without a cap it
+   stretched to the full 100vh <main>, and `background-size: cover` then cropped
+   the image heavily on wide/fullscreen displays. clamp() keeps it proportional
+   to the viewport while never growing viewport-tall. */
+.hero-right {
+  width: 100%;
+  height: clamp(420px, 58vh, 580px);
+  max-height: 580px;
+  align-self: center;
+}
+
+@media (max-width: 900px) {
+  /* Collapse the desktop links + CTA into the hamburger */
+  .nav-links {
+    display: none;
+  }
+
+  .nav-cta {
+    display: none;
+  }
+
+  .nav-burger {
+    display: flex;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    width: min(640px, calc(100% - 2.5rem));
+  }
+
+  .hero-left {
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero-headline {
+    max-width: 20ch;
+  }
+
+  .hero-sub {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-cta {
+    justify-content: center;
+  }
+
+  .hero-right {
+    height: 420px;
+    align-self: auto;
+  }
+}

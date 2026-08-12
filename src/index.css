@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens. Centralising the palette + type scale here means every
+   section reads from one source, so keeping the theme balanced (dark vs
+   light) is a one-line change instead of a hunt through component CSS.
+--------------------------------------------------------------------------- */
+:root {
+	color-scheme: dark;
+
+	/* Typography */
+	--font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+	--font-body: "Poppins", "Segoe UI", system-ui, sans-serif;
+
+	/* Neutral monochrome surfaces. Sections below the hero use this greyscale
+	   ramp instead of the violet accent, so everything past the landing reads
+	   black & white. */
+	--bg-mono: #0b0b0c;
+	--bg-mono-soft: #141416;
+	--mono-hairline: rgba(255, 255, 255, 0.1);
+
+	/* Deep-space purples (dark surfaces) */
+	--bg-void: #050208;
+	--bg-deep: #0b0616;
+	--bg-ink: #0d0716;
+
+	/* Light surfaces — used to break up the darkness and add contrast */
+	--bg-light: #f6f3fb;
+	--bg-light-soft: #efeaf8;
+	--ink-on-light: #1b1226;
+	--ink-on-light-soft: rgba(27, 18, 38, 0.62);
+
+	/* Accent ramp (violet) */
+	--accent-300: #c4b5fd;
+	--accent-400: #a78bfa;
+	--accent-500: #8b5cf6;
+	--accent-600: #7c3aed;
+
+	/* Text on dark */
+	--text-hi: #ffffff;
+	--text-mid: rgba(255, 255, 255, 0.72);
+	--text-low: rgba(255, 255, 255, 0.55);
+}
+
+/* Smooth in-page scrolling for the navbar anchor links. Sections set their own
+   scroll-margin-top so the fixed navbar doesn't cover their headings. */
+html {
+	scroll-behavior: smooth;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	min-height: 100vh;
+	width: 100%;
+	font-family: var(--font-body);
+	font-weight: 300;
+	/* Unified monochrome page backdrop. The hero's FaultyTerminal sits on top
+	   of this within the hero only; every section below shares this black &
+	   white gradient so the page flows continuously. */
+	background:
+		radial-gradient(1000px 700px at 50% -10%, rgba(255, 255, 255, 0.05), transparent 60%),
+		linear-gradient(180deg, #08080a 0%, #0b0b0c 50%, #060607 100%);
+	background-attachment: fixed;
+	color: var(--text-hi);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+/* Headings switch to the geometric display face. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: var(--font-display);
+	font-weight: 600;
+}
+
+/* Buttons / nav inherit Poppins for clean, readable labels. */
+button,
+a {
+	font-family: var(--font-body);
+}
+
+#root {
+	min-height: 100vh;
+	width: 100%;
+}
+
+::selection {
+	background: var(--accent-600);
+	color: #fff;
+}
+
+/* Shared page container — single source for the max content width so every
+   section lines up edge-to-edge. Widened from 1200px so wide screens don't
+   leave big empty margins. */
+.container {
+	width: min(1320px, calc(100% - 4rem));
+	margin-inline: auto;
+}
+
+/* Consistent vertical rhythm for every section. */
+section {
+	position: relative;
+	z-index: 1;
+}

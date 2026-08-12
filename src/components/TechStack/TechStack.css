@@ -1,0 +1,93 @@
+/* "Tech Stack" section. Solid dark band (background is set inline from the same
+   constant the LogoLoop fade uses, so the marquee edges blend seamlessly). The
+   heading reveals on scroll-into-view; the LogoLoop runs a continuous marquee. */
+
+.stack {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 4.5rem 0;
+  scroll-margin-top: 6rem;
+}
+
+.stack-inner {
+  width: min(1320px, calc(100% - 4rem));
+  margin: 0 auto;
+}
+
+.stack-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.stack-eyebrow,
+.stack-title {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.stack-head.is-visible .stack-eyebrow,
+.stack-head.is-visible .stack-title {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stack-head.is-visible .stack-eyebrow { transition-delay: 0s; }
+.stack-head.is-visible .stack-title { transition-delay: 0.14s; }
+
+.stack-eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 1rem;
+}
+
+.stack-title {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin: 0;
+  padding-bottom: 0.08em;
+  background: linear-gradient(180deg, #ffffff 0%, #b8b8bd 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* The marquee track. Icons inherit their brand colour from inline styles; the
+   subtle drop-shadow lifts them off the dark band. */
+.stack-loop {
+  /* Break out of the 1200px centered inner so the marquee + fade touch the
+     actual viewport edges. This makes the left/right fade feel "full screen"
+     instead of stopping at a narrow container. */
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+.stack-loop .logoloop__node {
+  filter: drop-shadow(0 4px 14px rgba(255, 255, 255, 0.12));
+}
+
+@media (max-width: 900px) {
+  .stack {
+    padding: 4.5rem 0;
+  }
+
+  .stack-inner {
+    width: min(640px, calc(100% - 2.5rem));
+  }
+}
