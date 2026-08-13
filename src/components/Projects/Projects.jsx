@@ -72,7 +72,7 @@ const Projects = ({ className = '' }) => {
         <div className="projects-gallery cursor-target">
           <AccordionGallery
             items={GALLERY_ITEMS}
-            defaultIndex={2}
+            defaultIndex={0}
             height={420}
             gap={8}
             radius={4}

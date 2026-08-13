@@ -32,6 +32,7 @@ const AccordionGallery = ({
   const descRefs = useRef([])
   const stackRefs = useRef([])
   const actionRefs = useRef([])
+  const centerLabelRefs = useRef([])
   const tlRef = useRef(null)
   const firstRunRef = useRef(true)
   const mediaSizeRef = useRef(320)
@@ -85,7 +86,7 @@ const AccordionGallery = ({
               x: vertical ? 0 : isActive ? 0 : shift,
               y: vertical ? (isActive ? 0 : shift) : 0,
               '--ag-gray': gray,
-              '--ag-dim': isActive ? 0.15 : 0.45,
+              '--ag-dim': isActive ? 0.15 : 0.25,
               duration: dur,
               ease,
             },
@@ -95,10 +96,13 @@ const AccordionGallery = ({
 
         if (showLabels) {
           const targets = [bar, text, desc, stack, action].filter(Boolean)
+          const centerLabel = centerLabelRefs.current[i]
           if (isActive) {
             tl.to(targets, { opacity: 1, x: 0, y: 0, duration: dur, ease, stagger: prefersReduced ? 0 : stagger }, 0)
+            if (centerLabel) tl.to(centerLabel, { opacity: 0, y: 8, duration: dur * 0.4, ease }, 0)
           } else {
             tl.to(targets, { opacity: 0, x: -14, duration: dur * 0.6, ease }, 0)
+            if (centerLabel) tl.to(centerLabel, { opacity: 1, y: 0, duration: dur, ease }, 0)
           }
         }
       })
@@ -211,6 +215,15 @@ const AccordionGallery = ({
                 <img src={item.image} alt={item.alt || item.label || ''} draggable="false" loading={i === 0 ? 'eager' : 'lazy'} />
               </span>
               <span className="ag-panel__overlay" aria-hidden="true" />
+              {!isActive && showLabels && (
+                <span
+                  className="ag-panel__center-label"
+                  ref={(el) => (centerLabelRefs.current[i] = el)}
+                  aria-hidden="true"
+                >
+                  {item.label}
+                </span>
+              )}
             </span>
             {showLabels && (
               <div className="ag-panel__content">
