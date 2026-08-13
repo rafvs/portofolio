@@ -1,137 +1,146 @@
-/* Footer / "Kontak" section. A glassmorphic card holding the collaboration CTA
-   and contact links, on the page's purple gradient. Reveals on scroll-into-view. */
-
 .footer {
-  position: relative;
-  z-index: 1;
-  color: #fff;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 5rem 0 3rem;
-  scroll-margin-top: 6rem;
+  scroll-margin-top: 74px;
 }
 
-.footer-inner {
-  width: min(980px, calc(100% - 3rem));
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.footer-inner.section-shell {
+  padding-bottom: 2rem;
 }
 
-/* Glass card */
 .footer-card {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: clamp(2rem, 5vw, 3.5rem);
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  backdrop-filter: blur(18px) saturate(1.4);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
-  box-shadow: 0 30px 80px -40px rgba(124, 58, 237, 0.55);
-
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.footer-card.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.footer-eyebrow {
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-  margin-bottom: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 0.8fr;
+  gap: clamp(2rem, 8vw, 8rem);
+  padding: clamp(1.5rem, 5vw, 4rem) 0;
+  border-top: 1px solid var(--border-strong);
 }
 
 .footer-title {
-  font-size: clamp(1.9rem, 4.2vw, 3rem);
-  font-weight: 700;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
-  margin: 0;
-  padding-bottom: 0.08em;
-  background: linear-gradient(180deg, #ffffff 0%, #b8b8bd 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  max-width: 11ch;
+  margin: 1rem 0 0;
+  font-size: clamp(2.5rem, 5.8vw, 5.5rem);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.065em;
 }
 
 .footer-copy {
-  font-size: clamp(0.98rem, 1.6vw, 1.1rem);
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.7);
-  max-width: 52ch;
-  margin: 1.25rem 0 0;
+  max-width: 45ch;
+  margin: 1.5rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.75;
 }
 
-.footer-cta {
-  margin-top: 2.25rem;
-}
-
-/* Contact links row */
-.footer-links {
-  list-style: none;
-  margin: 2.5rem 0 0;
-  padding: 0;
+.footer-contacts {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem 1.5rem;
-  justify-content: center;
+  flex-direction: column;
+  border-top: 1px solid var(--border);
 }
 
-.footer-link {
+.footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+  transition: padding-left 0.2s ease;
+}
+
+.footer-contact:hover,
+.footer-contact:focus-visible {
+  padding-left: 0.75rem;
+}
+
+.footer-contact__label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.footer-contact__icon {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 1.1rem;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.85);
-  text-decoration: none;
-  font-size: 0.95rem;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-contact:hover .footer-contact__icon {
+  color: var(--text);
+  transform: scale(1.1);
+}
+
+.footer-contact strong {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2vw, 1.35rem);
   font-weight: 500;
-  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease,
-    transform 0.25s ease;
+  letter-spacing: -0.03em;
 }
 
-.footer-link:hover {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.5);
-  background: rgba(124, 58, 237, 0.18);
-  transform: translateY(-2px);
+.footer-contact i {
+  color: var(--text-secondary);
+  font-style: normal;
 }
 
-.footer-link__icon {
-  display: inline-flex;
-  font-size: 1.15rem;
-  color: #d4d4d8;
+.footer-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 0.5rem;
 }
 
-.footer-note {
-  margin: 2.5rem 0 0;
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.4);
-  letter-spacing: 0.02em;
+.footer-logo-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.15));
 }
 
-@media (max-width: 900px) {
-  .footer {
-    padding: 4.5rem 0 2.5rem;
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-tertiary);
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.footer-bottom__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.footer-bottom__logo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  opacity: 0.85;
+}
+
+@media (max-width: 720px) {
+  .footer-card {
+    grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
-  .footer-inner {
-    width: min(560px, calc(100% - 2.5rem));
+  .footer-title {
+    max-width: 13ch;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-bottom {
+    flex-direction: column;
+    gap: 0.5rem;
   }
 }

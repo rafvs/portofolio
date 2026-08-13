@@ -1,114 +1,243 @@
-@import "tailwindcss";
-
-/* ---------------------------------------------------------------------------
-   Design tokens. Centralising the palette + type scale here means every
-   section reads from one source, so keeping the theme balanced (dark vs
-   light) is a one-line change instead of a hunt through component CSS.
---------------------------------------------------------------------------- */
-:root {
-	color-scheme: dark;
-
-	/* Typography */
-	--font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
-	--font-body: "Poppins", "Segoe UI", system-ui, sans-serif;
-
-	/* Neutral monochrome surfaces. Sections below the hero use this greyscale
-	   ramp instead of the violet accent, so everything past the landing reads
-	   black & white. */
-	--bg-mono: #0b0b0c;
-	--bg-mono-soft: #141416;
-	--mono-hairline: rgba(255, 255, 255, 0.1);
-
-	/* Deep-space purples (dark surfaces) */
-	--bg-void: #050208;
-	--bg-deep: #0b0616;
-	--bg-ink: #0d0716;
-
-	/* Light surfaces — used to break up the darkness and add contrast */
-	--bg-light: #f6f3fb;
-	--bg-light-soft: #efeaf8;
-	--ink-on-light: #1b1226;
-	--ink-on-light-soft: rgba(27, 18, 38, 0.62);
-
-	/* Accent ramp (violet) */
-	--accent-300: #c4b5fd;
-	--accent-400: #a78bfa;
-	--accent-500: #8b5cf6;
-	--accent-600: #7c3aed;
-
-	/* Text on dark */
-	--text-hi: #ffffff;
-	--text-mid: rgba(255, 255, 255, 0.72);
-	--text-low: rgba(255, 255, 255, 0.55);
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-muted: #f2f2f0;
+  --text: #111111;
+  --text-secondary: #5d5d58;
+  --text-tertiary: #898984;
+  --border: #deded9;
+  --border-strong: #b9b9b2;
+  --solid: #111111;
+  --on-solid: #ffffff;
+  --shadow: rgba(17, 17, 17, 0.09);
+  --font-display: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+  --font-jp: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif;
 }
 
-/* Smooth in-page scrolling for the navbar anchor links. Sections set their own
-   scroll-margin-top so the fixed navbar doesn't cover their headings. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface-muted: #171717;
+  --text: #f5f5f2;
+  --text-secondary: #a8a8a2;
+  --text-tertiary: #74746f;
+  --border: #292929;
+  --border-strong: #484848;
+  --solid: #f5f5f2;
+  --on-solid: #0a0a0a;
+  --shadow: rgba(0, 0, 0, 0.28);
+}
+
 html {
-	scroll-behavior: smooth;
+  scroll-behavior: smooth;
+  background: var(--bg);
 }
 
 * {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 html,
 body {
-	margin: 0;
-	padding: 0;
-	min-height: 100vh;
-	width: 100%;
-	font-family: var(--font-body);
-	font-weight: 300;
-	/* Unified monochrome page backdrop. The hero's FaultyTerminal sits on top
-	   of this within the hero only; every section below shares this black &
-	   white gradient so the page flows continuously. */
-	background:
-		radial-gradient(1000px 700px at 50% -10%, rgba(255, 255, 255, 0.05), transparent 60%),
-		linear-gradient(180deg, #08080a 0%, #0b0b0c 50%, #060607 100%);
-	background-attachment: fixed;
-	color: var(--text-hi);
-	-webkit-font-smoothing: antialiased;
-	text-rendering: optimizeLegibility;
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-/* Headings switch to the geometric display face. */
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
 h1,
 h2,
 h3,
 h4,
-h5,
-h6 {
-	font-family: var(--font-display);
-	font-weight: 600;
+p {
+  margin-top: 0;
 }
 
-/* Buttons / nav inherit Poppins for clean, readable labels. */
+h1,
+h2,
+h3,
+h4 {
+  color: var(--text);
+  font-family: var(--font-display);
+}
+
 button,
 a {
-	font-family: var(--font-body);
+  font: inherit;
+}
+
+img {
+  max-width: 100%;
 }
 
 #root {
-	min-height: 100vh;
-	width: 100%;
+  min-height: 100vh;
 }
 
 ::selection {
-	background: var(--accent-600);
-	color: #fff;
+  background: var(--solid);
+  color: var(--on-solid);
 }
 
-/* Shared page container — single source for the max content width so every
-   section lines up edge-to-edge. Widened from 1200px so wide screens don't
-   leave big empty margins. */
-.container {
-	width: min(1320px, calc(100% - 4rem));
-	margin-inline: auto;
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
 }
 
-/* Consistent vertical rhythm for every section. */
-section {
-	position: relative;
-	z-index: 1;
+.container,
+.section-shell {
+  width: min(1240px, calc(100% - 4rem));
+  margin-inline: auto;
+}
+
+.section-shell {
+  padding-block: clamp(5rem, 9vw, 8rem);
+}
+
+.section-heading {
+  display: grid;
+  grid-template-columns: 0.35fr 1fr;
+  gap: 2rem;
+  align-items: start;
+  margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.section-kicker {
+  margin: 0;
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.section-heading__copy {
+  max-width: 760px;
+}
+
+.section-title {
+  margin: 0;
+  font-size: clamp(2.25rem, 5vw, 4.75rem);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.section-description {
+  max-width: 55ch;
+  margin: 1.25rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.98rem;
+  line-height: 1.75;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.status-badge i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text);
+}
+
+.card-eyebrow {
+  margin-bottom: 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.card-period {
+  margin: 0.75rem 0 0;
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1.5rem;
+}
+
+.tag-list span {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 0.66rem;
+}
+
+.deferred-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 800px) {
+  .container,
+  .section-shell {
+    width: min(100% - 2rem, 680px);
+  }
+
+  .section-heading {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
 }

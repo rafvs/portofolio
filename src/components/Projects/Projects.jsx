@@ -1,22 +1,50 @@
-import AccordionGallery from '../AccordionGallery/AccordionGallery.jsx'
 import useInView from '../../hooks/useInView.js'
+import AccordionGallery from '../AccordionGallery/AccordionGallery.jsx'
+import BlurText from '../BlurText/BlurText.jsx'
+import bellsHouseImg from '../../assets/proyek/bellshouse.png'
+import rplCashImg from '../../assets/proyek/rplcash.png'
 import './Projects.css'
 
-// "Karya" (Projects) section. A React Bits AccordionGallery of project cards that
-// expand on hover. The section heading reveals on scroll-into-view via the shared
-// useInView hook.
-//
-// TODO: replace these placeholders with real projects — swap `image` for a real
-// screenshot (drop files in public/assets/ and reference "/assets/…"), set the
-// real `label`, and add a `link` (e.g. link: 'https://…') to make each card open
-// the live site or repo. Placeholders intentionally omit `link` so they render as
-// non-navigating panels.
-const PROJECTS = [
-  { image: 'https://picsum.photos/id/180/900/1200', label: 'Project 1', alt: 'Placeholder proyek 1' },
-  { image: 'https://picsum.photos/id/0/900/1200', label: 'Project 2', alt: 'Placeholder proyek 2' },
-  { image: 'https://picsum.photos/id/48/900/1200', label: 'Project 3', alt: 'Placeholder proyek 3' },
-  { image: 'https://picsum.photos/id/60/900/1200', label: 'Project 4', alt: 'Placeholder proyek 4' },
-  { image: 'https://picsum.photos/id/119/900/1200', label: 'Project 5', alt: 'Placeholder proyek 5' },
+const comingSoonImg = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='1000' viewBox='0 0 800 1000'%3E%3Crect width='800' height='1000' fill='%2308080c'/%3E%3Cg opacity='0.06'%3E%3Cline x1='0' y1='0' x2='800' y2='1000' stroke='%23ffffff' stroke-width='2'/%3E%3Cline x1='800' y1='0' x2='0' y2='1000' stroke='%23ffffff' stroke-width='2'/%3E%3C/g%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2333333e' font-family='system-ui, sans-serif' font-size='48' font-weight='800' letter-spacing='10'%3ECOMING SOON%3C/text%3E%3C/svg%3E`
+
+const GALLERY_ITEMS = [
+  {
+    image: bellsHouseImg,
+    label: 'Bells House',
+    description: 'Sistem manajemen & informasi persewaan hunian terpadu.',
+    stack: ['React', 'Tailwind', 'PHP'],
+    github: 'https://github.com/rafvs/bellshouse',
+    alt: 'Tampilan aplikasi Bells House',
+  },
+  {
+    image: rplCashImg,
+    label: 'RPL Cash',
+    description: 'Aplikasi pengelolaan dana kas dan pencatatan keuangan kelas PPLG.',
+    stack: ['Laravel', 'MySQL', 'Bootstrap'],
+    github: 'https://github.com/rafvs/RPLCASh',
+    alt: 'Tampilan aplikasi RPL Cash',
+  },
+  {
+    image: comingSoonImg,
+    label: 'Coming Soon #01',
+    description: 'Proyek baru sedang dalam tahap perancangan & pengembangan.',
+    stack: ['In Progress'],
+    alt: 'Proyek mendatang',
+  },
+  {
+    image: comingSoonImg,
+    label: 'Coming Soon #02',
+    description: 'Eksplorasi aplikasi web baru yang akan segera diluncurkan.',
+    stack: ['In Progress'],
+    alt: 'Proyek mendatang',
+  },
+  {
+    image: comingSoonImg,
+    label: 'Coming Soon #03',
+    description: 'Eksplorasi visual & eksperimen antarmuka digital.',
+    stack: ['In Progress'],
+    alt: 'Proyek mendatang',
+  },
 ]
 
 const Projects = ({ className = '' }) => {
@@ -24,29 +52,38 @@ const Projects = ({ className = '' }) => {
 
   return (
     <section className={`projects${className ? ` ${className}` : ''}`} id="projects">
-      <div className="projects-inner">
-        <div className={`projects-head${reveal ? ' is-visible' : ''}`} ref={revealRef}>
-          <span className="projects-eyebrow">Karya</span>
-          <h2 className="projects-title">Proyek Pilihan</h2>
-          <p className="projects-sub">
-            Sebagian karya yang pernah saya kerjakan. Arahkan kursor ke setiap kartu untuk melihat lebih dekat.
-          </p>
+      <div className="section-shell">
+        <div className="section-heading">
+          <p className="section-kicker">01 / Karya</p>
+          <div className={`section-heading__copy reveal${reveal ? ' is-visible' : ''}`} ref={revealRef}>
+            <BlurText
+              text="Beberapa hal yang sedang saya bangun."
+              className="section-title"
+              delay={60}
+              animateBy="words"
+              direction="bottom"
+              threshold={0.2}
+              rootMargin="-80px"
+            />
+            <p className="section-description">Kumpulan karya akan ditambahkan satu per satu. Arahkan kursor pada setiap panel untuk melihatnya melebar — detail dan tautan proyek segera hadir.</p>
+          </div>
         </div>
 
-        <div className="projects-gallery">
+        <div className="projects-gallery cursor-target">
           <AccordionGallery
-            items={PROJECTS}
+            items={GALLERY_ITEMS}
             defaultIndex={2}
-            accentColor="#cf9eff"
-            overlayColor="#0b0616"
+            height={420}
+            gap={8}
+            radius={4}
+            expandRatio={0.55}
+            duration={0.55}
+            tilt={4}
+            parallax={0.4}
+            accentColor="#ffffff"
+            overlayColor="#0a0a0a"
             textColor="#ffffff"
-            height={480}
-            gap={12}
-            radius={18}
-            expandRatio={0.54}
-            trigger="hover"
             grayscale
-            showLabels
           />
         </div>
       </div>

@@ -34,18 +34,8 @@
   transform-origin: center center;
   background: #0a0713;
   box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(196, 181, 253, 0);
   will-change: flex-grow, transform;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
   -webkit-tap-highlight-color: transparent;
-}
-
-/* Hover affordance: lift + accent border so the interactive panels read as
-   clickable and respond even before the GSAP expand kicks in. */
-.ag-panel:hover,
-.ag-panel--active {
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 24px 50px -20px rgba(0, 0, 0, 0.7);
 }
 
 .ag-panel:focus-visible {
@@ -96,16 +86,26 @@
     color-mix(in srgb, var(--ag-overlay) calc(var(--ag-dim, 0.35) * 100%), transparent);
 }
 
-.ag-panel__label {
+.ag-panel__content {
   position: absolute;
   left: 20px;
   bottom: 20px;
   right: 20px;
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.ag-panel--active .ag-panel__content {
+  pointer-events: auto;
+}
+
+.ag-panel__label {
+  display: flex;
   align-items: center;
   gap: 12px;
-  pointer-events: none;
-  z-index: 2;
 }
 
 .ag-panel__bar {
@@ -131,19 +131,94 @@
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
 }
 
-@media (max-width: 520px) {
+.ag-panel__description {
+  margin: 0;
+  color: var(--text-secondary, #a1a1aa);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  max-width: 34ch;
+  opacity: 0;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+}
+
+.ag-panel__stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  opacity: 0;
+}
+
+.ag-panel__tag {
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border-radius: 4px;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 500;
+  font-family: var(--font-display, inherit);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ag-panel__actions {
+  margin-top: 4px;
+  opacity: 0;
+}
+
+.ag-panel__github-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--ag-accent, #ffffff);
+  color: #0a0a0a;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ag-panel__github-btn:hover {
+  transform: translateY(-2px);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.25);
+}
+
+@media (max-width: 768px) {
   .accordion-gallery {
     flex-direction: column;
     perspective: none;
-    height: auto !important;
+    height: 600px !important;
   }
   .ag-panel {
-    min-height: 84px;
+    min-height: 64px;
     transform: none !important;
   }
   .accordion-gallery .ag-panel__media {
     width: 100%;
-    height: var(--ag-media-size);
+    height: 120%;
+  }
+  .ag-panel__content {
+    left: 16px;
+    bottom: 16px;
+    right: 16px;
+    gap: 8px;
+  }
+  .ag-panel__description {
+    font-size: 0.75rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .ag-panel__label {
+    gap: 8px;
+  }
+  .ag-panel__text {
+    font-size: 1rem;
   }
 }
 

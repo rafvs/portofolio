@@ -1,93 +1,63 @@
-/* "Tech Stack" section. Solid dark band (background is set inline from the same
-   constant the LogoLoop fade uses, so the marquee edges blend seamlessly). The
-   heading reveals on scroll-into-view; the LogoLoop runs a continuous marquee. */
-
 .stack {
-  position: relative;
-  z-index: 1;
-  color: #fff;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 4.5rem 0;
-  scroll-margin-top: 6rem;
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: 74px;
 }
 
-.stack-inner {
-  width: min(1320px, calc(100% - 4rem));
-  margin: 0 auto;
+.stack-inner.section-shell {
+  padding-bottom: 3rem;
 }
 
-.stack-head {
+.stack-marquee {
+  width: 100%;
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.stack-marquee__track {
   display: flex;
-  flex-direction: column;
+  width: max-content;
+  animation: stack-scroll 32s linear infinite;
+}
+
+.stack-item {
+  display: flex;
   align-items: center;
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.stack-eyebrow,
-.stack-title {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.stack-head.is-visible .stack-eyebrow,
-.stack-head.is-visible .stack-title {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.stack-head.is-visible .stack-eyebrow { transition-delay: 0s; }
-.stack-head.is-visible .stack-title { transition-delay: 0.14s; }
-
-.stack-eyebrow {
+  gap: 0.75rem;
+  padding: 1.1rem 1.5rem;
+  border-right: 1px solid var(--border);
+  color: var(--text-secondary);
   font-family: var(--font-display);
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-  margin-bottom: 1rem;
+  font-size: 0.82rem;
+  white-space: nowrap;
 }
 
-.stack-title {
-  font-size: clamp(1.75rem, 4vw, 2.75rem);
-  font-weight: 700;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
-  margin: 0;
-  padding-bottom: 0.08em;
-  background: linear-gradient(180deg, #ffffff 0%, #b8b8bd 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+.stack-item i {
+  margin-left: 0.75rem;
+  color: var(--text-tertiary);
+  font-style: normal;
 }
 
-/* The marquee track. Icons inherit their brand colour from inline styles; the
-   subtle drop-shadow lifts them off the dark band. */
-.stack-loop {
-  /* Break out of the 1200px centered inner so the marquee + fade touch the
-     actual viewport edges. This makes the left/right fade feel "full screen"
-     instead of stopping at a narrow container. */
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+.stack-mark {
+  display: grid;
+  min-width: 34px;
+  height: 34px;
+  padding: 0.2rem;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  font-size: 0.58rem;
+  font-weight: 600;
 }
 
-.stack-loop .logoloop__node {
-  filter: drop-shadow(0 4px 14px rgba(255, 255, 255, 0.12));
-}
-
-@media (max-width: 900px) {
-  .stack {
-    padding: 4.5rem 0;
+@keyframes stack-scroll {
+  to {
+    transform: translateX(-50%);
   }
+}
 
-  .stack-inner {
-    width: min(640px, calc(100% - 2.5rem));
+@media (prefers-reduced-motion: reduce) {
+  .stack-marquee__track {
+    animation: none;
   }
 }

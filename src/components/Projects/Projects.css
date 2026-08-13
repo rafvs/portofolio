@@ -1,91 +1,18 @@
-/* "Karya" (Projects) section. Solid dark band so the AccordionGallery images pop
-   and it reads as a distinct surface from the surrounding purple gradient. The
-   heading reveals on scroll-into-view (is-visible cascade). */
-
 .projects {
-  position: relative;
-  z-index: 1;
-  color: #fff;
-  /* Transparent — reads as part of the unified page backdrop. */
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 5rem 0;
-  scroll-margin-top: 6rem;
-}
-
-.projects-inner {
-  width: min(1320px, calc(100% - 4rem));
-  margin: 0 auto;
-}
-
-.projects-head {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.projects-eyebrow,
-.projects-title,
-.projects-sub {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.projects-head.is-visible .projects-eyebrow,
-.projects-head.is-visible .projects-title,
-.projects-head.is-visible .projects-sub {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.projects-head.is-visible .projects-eyebrow { transition-delay: 0s; }
-.projects-head.is-visible .projects-title { transition-delay: 0.14s; }
-.projects-head.is-visible .projects-sub { transition-delay: 0.28s; }
-
-.projects-eyebrow {
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-  margin-bottom: 1rem;
-}
-
-.projects-title {
-  font-size: clamp(2rem, 4.5vw, 3.25rem);
-  font-weight: 700;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
-  margin: 0;
-  padding-bottom: 0.08em;
-  background: linear-gradient(180deg, #ffffff 0%, #b8b8bd 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.projects-sub {
-  font-size: clamp(0.95rem, 1.6vw, 1.1rem);
-  line-height: 1.65;
-  color: rgba(255, 255, 255, 0.65);
-  max-width: 52ch;
-  margin: 1rem 0 0;
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: 74px;
 }
 
 .projects-gallery {
-  width: 100%;
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
 }
 
-@media (max-width: 900px) {
-  .projects {
-    padding: 4.5rem 0;
-  }
+.projects-gallery .accordion-gallery {
+  /* monochrome restyle handled via props */
+}
 
-  .projects-inner {
-    width: min(640px, calc(100% - 2.5rem));
+@media (max-width: 560px) {
+  .projects-gallery .accordion-gallery {
+    height: auto;
   }
 }

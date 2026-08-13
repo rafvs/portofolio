@@ -1,61 +1,58 @@
-import ProfileCard from '../ProfileCard/ProfileCard.jsx'
 import useInView from '../../hooks/useInView.js'
+import SplitText from '../SplitText/SplitText.jsx'
 import schoolPhoto from '../../assets/school-photo.webp'
 import schoolLogo from '../../assets/shcool logo.png'
 import './Education.css'
 
-// "Pendidikan" section. Two-column layout mirroring Experience: the left column
-// reveals its copy on scroll-into-view (eyebrow → title → org → periode → points,
-// staggered via CSS transition-delay driven by a single is-visible class), the
-// right column is a React Bits ProfileCard styled for the school.
-const POINTS = [
-  'Mendalami Algoritma & Struktur Data, Pemrograman Berorientasi Objek (PBO), dan Pengembangan Web (HTML, CSS, PHP).',
-  'Terlibat langsung dalam proyek front-end secara kolaboratif bersama tim.',
-  'Membangun situs web responsif dan aplikasi manajemen tugas sebagai bagian dari portofolio proyek.',
-  'Menguasai Tailwind CSS dan terbiasa mendesain antarmuka lewat Figma/Canva.',
-]
+const TAGS = ['Web', 'PBO', 'Struktur Data', 'UI/UX']
 
 const Education = ({ className = '' }) => {
-  const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -15% 0px' })
+  const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -10% 0px' })
 
   return (
-    <section className={`edu${className ? ` ${className}` : ''}`} id="education">
-      <div className="edu-grid">
-        {/* Left: education copy — staggered reveal on scroll-in */}
-        <div className={`edu-left${reveal ? ' is-visible' : ''}`} ref={revealRef}>
-          <span className="edu-eyebrow">Pendidikan</span>
-
-          <h2 className="edu-title">SMKN 7 Samarinda</h2>
-
-          <p className="edu-org">Pengembangan Perangkat Lunak &amp; Gim (PPLG) — Kelas XII</p>
-
-          <p className="edu-period">07/2024 – 07/2027</p>
-
-          <ul className="edu-points">
-            {POINTS.map((point, i) => (
-              <li key={i} style={{ '--i': i }}>
-                {point}
-              </li>
-            ))}
-          </ul>
+    <section className={`education${className ? ` ${className}` : ''}`} id="education">
+      <div className="section-shell">
+        <div className="section-heading">
+          <p className="section-kicker">03 / Pendidikan</p>
+          <div className="section-heading__copy">
+            <SplitText
+              tag="h2"
+              className="section-title"
+              text="Fondasi untuk terus berkembang."
+              splitType="words"
+              delay={60}
+              duration={0.7}
+              from={{ opacity: 0, y: 26 }}
+              to={{ opacity: 1, y: 0 }}
+              threshold={0.2}
+              rootMargin="-80px"
+              textAlign="left"
+            />
+            <p className="section-description">Tempat saya memperdalam logika pemrograman, pengembangan web, dan cara mengubah ide menjadi antarmuka yang berguna.</p>
+          </div>
         </div>
 
-        {/* Right: ProfileCard for the school. */}
-        <div className="edu-card">
-          <ProfileCard
-            avatarUrl={schoolPhoto}
-            iconUrl={schoolLogo}
-            name="SMKN 7 Samarinda"
-            title="PPLG · Kelas XII"
-            enableTilt
-            enableMobileTilt={false}
-            behindGlowEnabled
-            behindGlowColor="rgba(255, 255, 255, 0.4)"
-            behindGlowSize="60%"
-            innerGradient="linear-gradient(145deg, #2a2a2d80 0%, #55555a44 100%)"
-            showUserInfo={false}
-          />
-        </div>
+        <article className={`education-card cursor-target reveal${reveal ? ' is-visible' : ''}`} ref={revealRef}>
+          <div className="education-card__topline">
+            <span className="education-card__number">01</span>
+            <span className="status-badge"><i /> Sedang Belajar</span>
+          </div>
+          <div className="education-card__body">
+            <div className="education-card__content">
+              <p className="card-eyebrow">Pengembangan Perangkat Lunak &amp; Gim</p>
+              <h3>SMKN 7 Samarinda</h3>
+              <p className="card-period">Kelas XII · 07/2024 — 07/2027</p>
+              <p className="education-card__summary">Mendalami pengembangan web, PBO, dan struktur data sambil membangun proyek nyata secara kolaboratif di jurusan PPLG.</p>
+              <div className="tag-list" aria-label="Bidang yang dieksplorasi">
+                {TAGS.map((tag) => <span key={tag}>{tag}</span>)}
+              </div>
+            </div>
+            <div className="education-card__image-wrap">
+              <img className="education-card__image" src={schoolPhoto} alt="Gedung SMKN 7 Samarinda" width="800" height="1201" loading="lazy" decoding="async" />
+              <img className="education-card__logo" src={schoolLogo} alt="Logo SMKN 7 Samarinda" width="200" height="200" loading="lazy" decoding="async" />
+            </div>
+          </div>
+        </article>
       </div>
     </section>
   )

@@ -1,0 +1,102 @@
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg, #0a0a0a);
+  color: var(--text, #fafafa);
+  overflow: hidden;
+  user-select: none;
+}
+
+.loading-screen__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  min-height: 160px;
+}
+
+.loading-screen__greeting {
+  margin: 0;
+  font-family: var(--font-display, 'Space Grotesk', sans-serif);
+  font-size: clamp(2.4rem, 6.5vw, 5.5rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  color: var(--text, #fafafa);
+  text-align: center;
+  will-change: transform, opacity;
+}
+
+.loading-screen__greeting--jp {
+  font-family: var(--font-jp, 'Noto Sans JP', sans-serif);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.loading-screen__language {
+  margin: 0;
+  font-family: var(--font-display, 'Space Grotesk', sans-serif);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--text-secondary, #71717a);
+  will-change: transform, opacity;
+}
+
+.loading-screen__status {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 3rem;
+  right: 3rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.loading-screen__reading {
+  font-family: var(--font-jp, 'Noto Sans JP', sans-serif);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  color: var(--text-secondary, #71717a);
+}
+
+.loading-screen__counter {
+  font-family: var(--font-display, 'Space Grotesk', sans-serif);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text, #fafafa);
+}
+
+.loading-screen__bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--text, #ffffff);
+}
+
+@media (max-width: 640px) {
+  .loading-screen__status {
+    bottom: 1.5rem;
+    left: 1.5rem;
+    right: 1.5rem;
+  }
+
+  .loading-screen__reading,
+  .loading-screen__counter {
+    font-size: 0.68rem;
+  }
+}
