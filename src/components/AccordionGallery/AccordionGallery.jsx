@@ -3,6 +3,13 @@ import { gsap } from 'gsap'
 
 import './AccordionGallery.css'
 
+/**
+ * Komponen AccordionGallery - Galeri interaktif dengan efek akordeon elastis berbasis GSAP.
+ * @param {Object} props
+ * @param {Array} props.items - Daftar item galeri (gambar, label, deskripsi, tautan github, dsb).
+ * @param {number} [props.defaultIndex=2] - Indeks item yang terbuka secara default.
+ * ...
+ */
 const AccordionGallery = ({
   items = [],
   defaultIndex = 2,
@@ -46,6 +53,14 @@ const AccordionGallery = ({
       ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
       : false
 
+  /**
+   * INTERAKSI ANIMASI (GSAP):
+   * Mengatur dan menganimasikan posisi/ukuran panel menggunakan GSAP.
+   * - Menghitung seberapa lebar panel aktif membesar (flexGrow) dibanding panel tidak aktif.
+   * - Melakukan rotasi 3D ringan pada panel non-aktif (efek tilt kiri/kanan).
+   * - Menggeser posisi gambar di dalam panel non-aktif untuk menciptakan efek paralaks saat kursor bergerak.
+   * - Mengatur efek stagger pada deskripsi dan teks agar muncul berurutan ketika panel terbuka.
+   */
   const applyLayout = useCallback(
     (animate) => {
       const panels = panelRefs.current
@@ -157,10 +172,20 @@ const AccordionGallery = ({
     []
   )
 
+  /**
+   * INTERAKSI HOVER:
+   * Handler hover panel. Jika konfigurasi pemicu adalah 'hover', panel yang didekati kursor
+   * akan otomatis diatur sebagai panel aktif (membuka secara elastis).
+   */
   const handleEnter = (i) => {
     if (trigger === 'hover') setActive(i)
   }
 
+  /**
+   * INTERAKSI KLIK:
+   * Handler klik panel. Jika panel yang diklik belum aktif, interaksi default link dibatalkan
+   * dan panel tersebut akan dibuka terlebih dahulu.
+   */
   const handleClick = (i, e) => {
     if (i !== active) {
       e.preventDefault()
@@ -168,6 +193,11 @@ const AccordionGallery = ({
     }
   }
 
+  /**
+   * INTERAKSI KEYBOARD:
+   * Mendukung aksesibilitas dengan tombol panah (ArrowRight/Down untuk maju, ArrowLeft/Up untuk mundur).
+   * Menekan tombol panah akan langsung menggeser fokus aktif ke panel berikutnya/sebelumnya.
+   */
   const handleKeyDown = (i, e) => {
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
       e.preventDefault()

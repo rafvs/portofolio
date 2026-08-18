@@ -1,6 +1,13 @@
 import { useInView, useMotionValue, useSpring } from 'motion/react';
 import { useCallback, useEffect, useRef } from 'react';
 
+/**
+ * Komponen CountUp - Menganimasikan angka dari suatu nilai ke nilai lain secara halus saat masuk viewport.
+ * @param {Object} props
+ * @param {number} props.to - Angka target akhir.
+ * @param {number} [props.from=0] - Angka awal.
+ * ...
+ */
 export default function CountUp({
   to,
   from = 0,
@@ -26,6 +33,11 @@ export default function CountUp({
 
   const isInView = useInView(ref, { once: true, margin: '0px' });
 
+  /**
+   * Menghitung jumlah angka di belakang koma (desimal).
+   * @param {number} num - Angka yang akan dihitung desimalnya.
+   * @returns {number} Jumlah angka desimal.
+   */
   const getDecimalPlaces = num => {
     const str = num.toString();
 
@@ -42,6 +54,11 @@ export default function CountUp({
 
   const maxDecimals = Math.max(getDecimalPlaces(from), getDecimalPlaces(to));
 
+  /**
+   * Memformat nilai angka menjadi representasi string dengan pemisah ribuan dan presisi desimal.
+   * @param {number} latest - Nilai angka terbaru dari spring.
+   * @returns {string} String angka terformat.
+   */
   const formatValue = useCallback(
     latest => {
       const hasDecimals = maxDecimals > 0;
@@ -60,19 +77,23 @@ export default function CountUp({
   );
 
   useEffect(() => {
+    // Set nilai awal teks sebelum animasi dimulai
     if (ref.current) {
       ref.current.textContent = formatValue(direction === 'down' ? to : from);
     }
   }, [from, to, direction, formatValue]);
 
   useEffect(() => {
+    // INTERAKSI DETEKSI VIEWPORT: Memicu jalannya animasi angka hanya saat komponen masuk ke viewport (layar)
     if (isInView && startWhen) {
       if (typeof onStart === 'function') onStart();
 
+      // Atur timer tunda (delay) sebelum target nilai spring diubah
       const timeoutId = setTimeout(() => {
         motionValue.set(direction === 'down' ? from : to);
       }, delay * 1000);
 
+      // Picu callback onEnd saat seluruh durasi animasi selesai berjalan
       const durationTimeoutId = setTimeout(
         () => {
           if (typeof onEnd === 'function') onEnd();
@@ -88,6 +109,8 @@ export default function CountUp({
   }, [isInView, startWhen, motionValue, direction, from, to, delay, onStart, onEnd, duration]);
 
   useEffect(() => {
+    // INTERAKSI UPDATE SPRING (PERFORMA): Memantau perubahan nilai spring secara presisi tinggi,
+    // lalu meng-update textContent DOM secara langsung tanpa memicu re-render reaktif pada React.
     const unsubscribe = springValue.on('change', latest => {
       if (ref.current) {
         ref.current.textContent = formatValue(latest);

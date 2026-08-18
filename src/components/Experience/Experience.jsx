@@ -4,15 +4,27 @@ import './Experience.css'
 
 const TAGS = ['Kepemimpinan', 'Dokumentasi', 'Koordinasi Tim']
 
+/**
+ * Komponen Experience - Menampilkan riwayat organisasi dan pengalaman kerja/kepemimpinan.
+ * @param {Object} props
+ * @param {string} props.frontImage - Jalur/URL gambar utama dokumentasi.
+ * @param {string} [props.className] - Kelas CSS tambahan.
+ * @returns {JSX.Element} Elemen section Experience.
+ */
 const Experience = ({ frontImage, className = '' }) => {
+  // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
+  // kapan kartu pengalaman masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -10% 0px' })
 
   return (
     <section className={`experience${className ? ` ${className}` : ''}`} id="pengalaman">
       <div className="section-shell">
+        
+        {/* BAGIAN HEADER SECTION: Menampilkan nomor urut dan judul section */}
         <div className="section-heading">
           <p className="section-kicker">02 / Pengalaman</p>
           <div className="section-heading__copy">
+            {/* Animasi memecah kata (SplitText) untuk judul section */}
             <SplitText
               tag="h2"
               className="section-title"
@@ -30,21 +42,32 @@ const Experience = ({ frontImage, className = '' }) => {
           </div>
         </div>
 
+        {/* KARTU PENGALAMAN (EXPERIENCE CARD):
+            - Menggunakan class 'reveal' yang ditambahkan 'is-visible' secara reaktif saat hook useInView terpicu (reveal = true).
+            - Menggunakan ref 'revealRef' untuk memantau elemen ini. */}
         <article className={`experience-card cursor-target reveal${reveal ? ' is-visible' : ''}`} ref={revealRef}>
           <div className="experience-card__topline">
             <span className="experience-card__number">01</span>
             <span className="status-badge"><i /> Sedang Aktif</span>
           </div>
           <div className="experience-card__body">
+            
+            {/* KONTEN DETAIL PENGALAMAN */}
             <div className="experience-card__content">
               <p className="card-eyebrow">Organisasi Siswa Intra Sekolah</p>
               <h3>Koordinator OSIS</h3>
               <p className="card-period">07/2024 — 12/2026</p>
               <p className="experience-card__summary">Memimpin Seksi Dokumentasi &amp; Publikasi dan mengoordinasikan tim agar kegiatan sekolah terdokumentasi serta terpublikasi dengan baik.</p>
+              
+              {/* DAFTAR BIDANG/TAGS PENGALAMAN */}
               <div className="tag-list" aria-label="Bidang pengalaman">
                 {TAGS.map((tag) => <span key={tag}>{tag}</span>)}
               </div>
             </div>
+
+            {/* FOTO DOKUMENTASI KEGIATAN:
+                - Menggunakan performa optimal dengan 'lazy' loading dan 'async' decoding.
+                - Efek hitam-putih (grayscale) diatur pada CSS dan bertransisi warna saat kartu di-hover. */}
             <div className="experience-card__image-wrap">
               <img className="experience-card__image" src={frontImage} alt="Dokumentasi kegiatan OSIS" width="800" height="1000" loading="lazy" decoding="async" />
             </div>

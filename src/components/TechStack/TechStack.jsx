@@ -15,16 +15,30 @@ const STACK = [
   { short: 'Fig', name: 'Figma' },
 ]
 
+/**
+ * Komponen TechStack - Menampilkan daftar teknologi (stack) yang dikuasai dalam bentuk baris berjalan (marquee).
+ * @param {Object} props
+ * @param {string} [props.className] - Kelas CSS tambahan.
+ * @returns {JSX.Element} Elemen section TechStack.
+ */
 const TechStack = ({ className = '' }) => {
+  // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
+  // kapan section TechStack masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -10% 0px' })
+
+  // MENDUPLIKASI ITEM STACK: Menduplikasi daftar array teknologi agar efek berjalan (marquee)
+  // terlihat menyambung secara kontinu tanpa jeda kosong.
   const marqueeItems = [...STACK, ...STACK]
 
   return (
     <section className={`stack${className ? ` ${className}` : ''}`} id="stack">
       <div className="stack-inner section-shell">
+        
+        {/* BAGIAN HEADER SECTION: Menampilkan kicker dan judul dengan animasi BlurText */}
         <div className={`section-heading reveal${reveal ? ' is-visible' : ''}`} ref={revealRef}>
           <p className="section-kicker">05 / Stack</p>
           <div className="section-heading__copy">
+            {/* Animasi teks masuk dengan efek blur per kata */}
             <BlurText
               text="Alat yang membantu ide jadi nyata."
               className="section-title"
@@ -39,6 +53,9 @@ const TechStack = ({ className = '' }) => {
         </div>
       </div>
 
+      {/* TRACK MARQUEE BERJALAN:
+          - Menggunakan CSS keyframes untuk menggeser baris ini secara horizontal secara terus menerus (infinite).
+          - Menyertakan singkatan (short) dan nama lengkap teknologi. */}
       <div className="stack-marquee" aria-label="Teknologi yang digunakan">
         <div className="stack-marquee__track">
           {marqueeItems.map((item, index) => (

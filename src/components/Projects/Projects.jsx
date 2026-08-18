@@ -47,15 +47,26 @@ const GALLERY_ITEMS = [
   },
 ]
 
+/**
+ * Komponen Projects - Menampilkan galeri akordeon berisi karya/proyek yang dikerjakan.
+ * @param {Object} props
+ * @param {string} [props.className] - Kelas CSS tambahan.
+ * @returns {JSX.Element} Elemen section Projects.
+ */
 const Projects = ({ className = '' }) => {
+  // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
+  // kapan section Karya/Proyek masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -10% 0px' })
 
   return (
     <section className={`projects${className ? ` ${className}` : ''}`} id="projects">
       <div className="section-shell">
+        
+        {/* BAGIAN HEADER SECTION: Menampilkan kicker dan judul dengan animasi BlurText */}
         <div className="section-heading">
           <p className="section-kicker">01 / Karya</p>
           <div className={`section-heading__copy reveal${reveal ? ' is-visible' : ''}`} ref={revealRef}>
+            {/* Animasi teks masuk dengan efek blur per kata */}
             <BlurText
               text="Beberapa hal yang sedang saya bangun."
               className="section-title"
@@ -65,10 +76,13 @@ const Projects = ({ className = '' }) => {
               threshold={0.2}
               rootMargin="-80px"
             />
-            <p className="section-description">Kumpulan karya akan ditambahkan satu per satu. Arahkan kursor pada setiap panel untuk melihatnya melebar — detail dan tautan proyek segera hadir.</p>
+            <p className="section-description">Kumpulan Karya Yang Pernah Saya Buat yang menjamin akan keprofesionalisme saya</p>
           </div>
         </div>
 
+        {/* GALERI PROYEK (ACCORDION GALLERY):
+            - Menampilkan daftar karya interaktif dengan efek akordeon elastis GSAP.
+            - Mengoperasikan item proyek (GALLERY_ITEMS) ke dalam komponen AccordionGallery. */}
         <div className="projects-gallery cursor-target">
           <AccordionGallery
             items={GALLERY_ITEMS}

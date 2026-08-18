@@ -15,10 +15,16 @@ const GREETINGS = [
 
 const INTRO = 0.2
 const FADE_IN = 0.18
-const HOLD = 0.1
-const LAST_HOLD = 0.5
+const HOLD = 0.3
+const LAST_HOLD = 0.8
 const FADE_OUT = 0.12
 
+/**
+ * Komponen LoadingScreen - Layar pemuatan awal (splash screen) dengan pesan sambutan multi-bahasa dan persentase loader.
+ * @param {Object} props
+ * @param {Function} props.onComplete - Callback yang dipicu setelah layar pemuatan selesai beranimasi keluar.
+ * @returns {JSX.Element} Elemen layar pemuatan.
+ */
 const LoadingScreen = ({ onComplete }) => {
   const containerRef = useRef(null)
   const textRef = useRef(null)
@@ -29,7 +35,7 @@ const LoadingScreen = ({ onComplete }) => {
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
-    // Prevent scrolling while loading screen is active
+    // INTERAKSI SCROLL LOCK: Mengunci scrollbar halaman utama saat layar loading aktif
     document.body.style.overflow = 'hidden'
 
     const progress = { value: 0 }
@@ -39,7 +45,7 @@ const LoadingScreen = ({ onComplete }) => {
 
     const tl = gsap.timeline({
       onComplete: () => {
-        // Restore scroll and trigger curtain slide up
+        // INTERAKSI CURTAIN REVEAL: Membuka layar loading dengan menggesernya ke atas & mengaktifkan kembali scrollbar halaman utama
         document.body.style.overflow = ''
         gsap.to(containerRef.current, {
           yPercent: -100,
@@ -52,7 +58,7 @@ const LoadingScreen = ({ onComplete }) => {
       },
     })
 
-    // Fade in the bottom status row
+    // Fade in baris status bagian bawah secara perlahan
     tl.fromTo(
       statusRef.current,
       { opacity: 0, y: 10 },
@@ -60,7 +66,7 @@ const LoadingScreen = ({ onComplete }) => {
       0
     )
 
-    // Percentage counter 0 -> 100, synced with the progress bar
+    // INTERAKSI PERSENTASE COUNTER: Menghitung 0% hingga 100% mengikuti jalannya total durasi loading
     tl.to(progress, {
       value: 100,
       duration: totalDuration,
@@ -71,13 +77,14 @@ const LoadingScreen = ({ onComplete }) => {
         }
       },
     }, 0)
+    // INTERAKSI PROGRESS BAR: Memperlebar garis loading di bawah layar secara sinkron dengan counter persentase
     tl.to(barRef.current, {
       width: '100%',
       duration: totalDuration,
       ease: 'power1.inOut',
     }, 0)
 
-    // Sequence through greetings with a soft crossfade
+    // INTERAKSI GREETINGS ROTATION (CROSSFADE): Mengubah kata sambutan dari berbagai bahasa secara berurutan dengan efek halus
     let cursor = INTRO
     GREETINGS.forEach((_, i) => {
       const isLast = i === count - 1
@@ -124,7 +131,7 @@ const LoadingScreen = ({ onComplete }) => {
       </div>
 
       <div className="loading-screen__status" ref={statusRef}>
-        <span className="loading-screen__reading">読込中</span>
+        <span className="loading-screen__reading">Memuat...</span>
         <span className="loading-screen__counter" ref={counterNumberRef}>0%</span>
       </div>
 

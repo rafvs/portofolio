@@ -6,15 +6,26 @@ import './Education.css'
 
 const TAGS = ['Web', 'PBO', 'Struktur Data', 'UI/UX']
 
+/**
+ * Komponen Education - Menampilkan riwayat akademis dan bidang pembelajaran.
+ * @param {Object} props
+ * @param {string} [props.className] - Kelas CSS tambahan.
+ * @returns {JSX.Element} Elemen section Education.
+ */
 const Education = ({ className = '' }) => {
+  // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
+  // kapan kartu pendidikan masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -10% 0px' })
 
   return (
     <section className={`education${className ? ` ${className}` : ''}`} id="education">
       <div className="section-shell">
+        
+        {/* BAGIAN HEADER SECTION: Menampilkan kicker/nomor urut dan judul section */}
         <div className="section-heading">
           <p className="section-kicker">03 / Pendidikan</p>
           <div className="section-heading__copy">
+            {/* Animasi memecah kata (SplitText) untuk judul section */}
             <SplitText
               tag="h2"
               className="section-title"
@@ -32,21 +43,32 @@ const Education = ({ className = '' }) => {
           </div>
         </div>
 
+        {/* KARTU PENDIDIKAN (EDUCATION CARD):
+            - Menggunakan class 'reveal' yang ditambahkan 'is-visible' secara reaktif saat hook useInView terpicu (reveal = true).
+            - Menggunakan ref 'revealRef' untuk memantau elemen ini. */}
         <article className={`education-card cursor-target reveal${reveal ? ' is-visible' : ''}`} ref={revealRef}>
           <div className="education-card__topline">
             <span className="education-card__number">01</span>
             <span className="status-badge"><i /> Sedang Belajar</span>
           </div>
           <div className="education-card__body">
+            
+            {/* KONTEN DETAIL PENDIDIKAN */}
             <div className="education-card__content">
               <p className="card-eyebrow">Pengembangan Perangkat Lunak &amp; Gim</p>
               <h3>SMKN 7 Samarinda</h3>
               <p className="card-period">Kelas XII · 07/2024 — 07/2027</p>
               <p className="education-card__summary">Mendalami pengembangan web, PBO, dan struktur data sambil membangun proyek nyata secara kolaboratif di jurusan PPLG.</p>
+              
+              {/* DAFTAR BIDANG/TAGS */}
               <div className="tag-list" aria-label="Bidang yang dieksplorasi">
                 {TAGS.map((tag) => <span key={tag}>{tag}</span>)}
               </div>
             </div>
+
+            {/* FOTO & LOGO SEKOLAH:
+                - Menggunakan performa optimal dengan 'lazy' loading dan 'async' decoding.
+                - Logo SMKN 7 disembunyikan secara default (opacity: 0) dan akan muncul membesar saat kartu di-hover (diatur di CSS). */}
             <div className="education-card__image-wrap">
               <img className="education-card__image" src={schoolPhoto} alt="Gedung SMKN 7 Samarinda" width="800" height="1201" loading="lazy" decoding="async" />
               <img className="education-card__logo" src={schoolLogo} alt="Logo SMKN 7 Samarinda" width="200" height="200" loading="lazy" decoding="async" />

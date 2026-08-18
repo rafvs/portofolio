@@ -6,6 +6,13 @@ import { useGSAP } from '@gsap/react'
 
 gsap.registerPlugin(ScrollTrigger, GSAPSplitText, useGSAP)
 
+/**
+ * Komponen SplitText - Memisahkan teks menjadi kata/karakter/baris dan menganimasikannya menggunakan GSAP ScrollTrigger.
+ * @param {Object} props
+ * @param {string} props.text - Teks yang akan dianimasikan.
+ * @param {number} [props.delay=50] - Kecepatan stagger transisi huruf/kata (ms).
+ * ...
+ */
 const SplitText = ({
   text,
   className = '',
@@ -141,6 +148,10 @@ const SplitText = ({
     }
   )
 
+  /**
+   * Merender tag HTML yang membungkus teks terpisah berdasarkan properti konfigurasi.
+   * @returns {JSX.Element} Elemen HTML terbungkus.
+   */
   const renderTag = () => {
     const style = {
       textAlign,

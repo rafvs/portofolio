@@ -31,12 +31,22 @@ const HERO_STATS = [
   { num: 10, suffix: '+', label: 'Teknologi' },
 ]
 
+/**
+ * Mengambil tema awal dari atribut HTML atau preferensi sistem pengguna.
+ * @returns {string} Tema awal ('light' atau 'dark').
+ */
 const getInitialTheme = () => {
   const theme = document.documentElement.dataset.theme
   if (theme === 'light' || theme === 'dark') return theme
   return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
 }
 
+/**
+ * Merender ikon SVG untuk tombol toggle tema berdasarkan tema aktif.
+ * @param {Object} props
+ * @param {string} props.theme - Tema saat ini ('light' atau 'dark').
+ * @returns {JSX.Element} Elemen SVG ikon tema.
+ */
 function ThemeIcon({ theme }) {
   if (theme === 'dark') {
     return (
@@ -53,6 +63,10 @@ function ThemeIcon({ theme }) {
   )
 }
 
+/**
+ * Komponen utama aplikasi portfolio yang mengatur layout, navigasi, dan state tema global.
+ * @returns {JSX.Element} Elemen utama aplikasi.
+ */
 function App() {
   const [loading, setLoading] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -78,7 +92,7 @@ function App() {
   const toggleTheme = () => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${!loading ? ' is-ready' : ''}`}>
       {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
       <TargetCursor spinDuration={2.5} />
       <header className={`site-header${scrolled ? ' is-scrolled' : ''}`}>
@@ -148,6 +162,7 @@ function App() {
                 cursorCharacter="|"
                 cursorClassName="hero-cursor"
                 loop={true}
+                startWhen={!loading}
               />
               <BlurText
                 text="Saya Muhammad Rafi. Saya merancang dan membangun pengalaman digital yang sederhana, responsif, dan mudah digunakan."
@@ -156,6 +171,7 @@ function App() {
                 animateBy="words"
                 direction="bottom"
                 threshold={0.1}
+                startWhen={!loading}
               />
 
               <div className="hero-cta">
@@ -167,7 +183,7 @@ function App() {
                 {HERO_STATS.map((stat) => (
                   <li key={stat.label} className="hero-stat">
                     <span className="hero-stat__value">
-                      <CountUp from={0} to={stat.num} duration={2.5} />{stat.suffix}
+                      <CountUp from={0} to={stat.num} duration={2.5} startWhen={!loading} />{stat.suffix}
                     </span>
                     <span className="hero-stat__label">{stat.label}</span>
                   </li>

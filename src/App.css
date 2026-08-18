@@ -1,8 +1,14 @@
+/* ============================================================
+   APP SHELL
+   ============================================================ */
 .app-shell {
   min-height: 100vh;
   overflow: clip;
 }
 
+/* ============================================================
+   SITE HEADER & NAVIGATION
+   ============================================================ */
 .site-header {
   position: sticky;
   top: 0;
@@ -16,6 +22,7 @@
     box-shadow 0.35s ease;
 }
 
+/* Header blur saat di-scroll */
 .site-header.is-scrolled {
   background: color-mix(in srgb, var(--bg) 55%, transparent);
   backdrop-filter: blur(18px) saturate(160%);
@@ -60,6 +67,7 @@
   gap: 0.65rem;
 }
 
+/* Link navigasi dengan efek underline */
 .nav-link {
   position: relative;
   color: var(--text-secondary);
@@ -87,6 +95,9 @@
   transform-origin: left;
 }
 
+/* ============================================================
+   BUTTONS
+   ============================================================ */
 .button {
   display: inline-flex;
   min-height: 48px;
@@ -129,6 +140,9 @@
   background: var(--surface-muted);
 }
 
+/* ============================================================
+   THEME TOGGLE & BURGER
+   ============================================================ */
 .theme-toggle,
 .nav-burger {
   display: grid;
@@ -175,6 +189,9 @@
   transform: translateY(-3px) rotate(-45deg);
 }
 
+/* ============================================================
+   MOBILE NAV
+   ============================================================ */
 .nav-mobile {
   position: absolute;
   top: 100%;
@@ -208,6 +225,9 @@
   text-align: center;
 }
 
+/* ============================================================
+   HERO SECTION
+   ============================================================ */
 .hero-section {
   display: grid;
   min-height: calc(100svh - 75px);
@@ -226,6 +246,21 @@
   padding-block: clamp(1.5rem, 3.5vh, 3rem);
 }
 
+/* --- Hero entrance: elemen disembunyikan HANYA selama loading berlangsung,
+      lalu muncul dengan animasi setelah loading selesai --- */
+.app-shell:not(.is-ready) .hero-kicker,
+.app-shell:not(.is-ready) .hero-headline,
+.app-shell:not(.is-ready) .hero-sub,
+.app-shell:not(.is-ready) .hero-cta,
+.app-shell:not(.is-ready) .hero-stats,
+.app-shell:not(.is-ready) .hero-visual {
+  opacity: 0;
+}
+
+.app-shell.is-ready .hero-kicker {
+  animation: hero-enter 0.6s ease both;
+}
+
 .hero-kicker {
   display: flex;
   align-items: center;
@@ -237,13 +272,16 @@
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  animation: hero-enter 0.6s ease both;
 }
 
 .hero-kicker span {
   width: 2.5rem;
   height: 1px;
   background: var(--border-strong);
+}
+
+.app-shell.is-ready .hero-headline {
+  animation: hero-enter 0.65s 0.08s ease both;
 }
 
 .hero-headline {
@@ -253,7 +291,6 @@
   font-weight: 500;
   line-height: 0.95;
   letter-spacing: -0.06em;
-  animation: hero-enter 0.65s 0.08s ease both;
   min-height: 3.8em;
 }
 
@@ -262,13 +299,20 @@
   font-weight: 300;
 }
 
+.app-shell.is-ready .hero-sub {
+  animation: hero-enter 0.65s 0.15s ease both;
+}
+
 .hero-sub {
   max-width: 50ch;
   margin: 1.25rem 0 0;
   color: var(--text-secondary);
   font-size: clamp(0.9rem, 1.2vw, 1rem);
   line-height: 1.7;
-  animation: hero-enter 0.65s 0.15s ease both;
+}
+
+.app-shell.is-ready .hero-cta {
+  animation: hero-enter 0.65s 0.22s ease both;
 }
 
 .hero-cta {
@@ -276,7 +320,10 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 1.5rem;
-  animation: hero-enter 0.65s 0.22s ease both;
+}
+
+.app-shell.is-ready .hero-stats {
+  animation: hero-enter 0.65s 0.29s ease both;
 }
 
 .hero-stats {
@@ -287,7 +334,6 @@
   padding: 0;
   border-top: 1px solid var(--border);
   list-style: none;
-  animation: hero-enter 0.65s 0.29s ease both;
 }
 
 .hero-stat {
@@ -315,10 +361,13 @@
   text-transform: uppercase;
 }
 
+.app-shell.is-ready .hero-visual {
+  animation: hero-enter 0.75s 0.15s ease both;
+}
+
 .hero-visual {
   position: relative;
   margin: 0;
-  animation: hero-enter 0.75s 0.15s ease both;
 }
 
 .hero-visual__index {
@@ -447,7 +496,7 @@
   8% { clip-path: inset(45% 0 30% 0); transform: translate(8px, -2px); }
   10% { clip-path: inset(5% 0 80% 0); transform: translate(-4px, 4px); }
   12% { clip-path: inset(0 0 0 0); transform: translate(0, 0); filter: grayscale(1) contrast(1.03); }
-  
+
   /* Hold clean state until 4-second mark glitch trigger */
   84% { clip-path: inset(0 0 0 0); transform: translate(0, 0); }
   86% { clip-path: inset(20% 0 55% 0); transform: translate(-7px, 2px); filter: grayscale(1) contrast(1.3); }
@@ -521,6 +570,9 @@
   background: var(--text);
 }
 
+/* ============================================================
+   HERO ENTRANCE ANIMATION
+   ============================================================ */
 @keyframes hero-enter {
   from {
     opacity: 0;
@@ -528,6 +580,9 @@
   }
 }
 
+/* ============================================================
+   RESPONSIVE — TABLET (≤1040px)
+   ============================================================ */
 @media (max-width: 1040px) {
   .nav-links {
     display: none;
@@ -542,6 +597,9 @@
   }
 }
 
+/* ============================================================
+   RESPONSIVE — MOBILE (≤800px)
+   ============================================================ */
 @media (max-width: 800px) {
   .nav-bar,
   .hero-grid {
@@ -572,6 +630,9 @@
   }
 }
 
+/* ============================================================
+   RESPONSIVE — SMALL MOBILE (≤480px)
+   ============================================================ */
 @media (max-width: 480px) {
   .hero-stats {
     grid-template-columns: 1fr;

@@ -52,18 +52,32 @@ const CONTACT_ITEMS = [
   },
 ]
 
+/**
+ * Komponen Footer - Menampilkan bagian kaki halaman dengan informasi kontak dan sosial media.
+ * @param {Object} props
+ * @param {string} [props.className] - Kelas CSS tambahan.
+ * @returns {JSX.Element} Elemen footer halaman.
+ */
 const Footer = ({ className = '' }) => {
+  // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
+  // kapan footer masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -5% 0px' })
 
   return (
     <footer className={`footer${className ? ` ${className}` : ''}`} id="footer">
       <div className="footer-inner section-shell">
+        
+        {/* KARTU UTAMA FOOTER (CONTACT CARD):
+            - Menggunakan class 'reveal' yang ditambahkan 'is-visible' secara reaktif saat hook useInView terpicu (reveal = true).
+            - Menggunakan ref 'revealRef' untuk memantau elemen ini. */}
         <div className={`footer-card reveal${reveal ? ' is-visible' : ''}`} ref={revealRef}>
           <div>
             <div className="footer-header-brand">
               <img src="/logo.png" alt="Nerravs Logo" className="footer-logo-img" />
               <p className="section-kicker">06 / Kontak</p>
             </div>
+            
+            {/* Animasi memecah kata (SplitText) untuk judul footer */}
             <SplitText
               tag="h2"
               className="footer-title"
@@ -80,6 +94,7 @@ const Footer = ({ className = '' }) => {
             <p className="footer-copy">Punya ide, proyek, atau sekadar ingin bertukar cerita? Saya terbuka untuk mendengar dan berdiskusi.</p>
           </div>
 
+          {/* DAFTAR KONTAK SOSIAL MEDIA */}
           <div className="footer-contacts">
             {CONTACT_ITEMS.map((item) => (
               <a
@@ -101,6 +116,7 @@ const Footer = ({ className = '' }) => {
           </div>
         </div>
 
+        {/* LOGO & HAK CIPTA DI BAGIAN BAWAH FOOTER */}
         <div className="footer-bottom">
           <div className="footer-bottom__brand">
             <img src="/logo.png" alt="Logo" className="footer-bottom__logo" />

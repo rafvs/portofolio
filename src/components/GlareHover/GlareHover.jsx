@@ -1,5 +1,10 @@
 import './GlareHover.css';
 
+/**
+ * Komponen GlareHover - Efek kartu mengkilap (glare) saat kursor diarahkan ke elemen.
+ * @param {Object} props
+ * ...
+ */
 const GlareHover = ({
   width = '500px',
   height = '500px',

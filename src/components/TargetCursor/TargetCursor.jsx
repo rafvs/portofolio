@@ -2,6 +2,11 @@ import { useEffect, useRef, useCallback, useMemo } from 'react'
 import { gsap } from 'gsap'
 import './TargetCursor.css'
 
+/**
+ * Mencari elemen pembungkus (containing block) terdekat yang memiliki efek transformasi/filter CSS.
+ * @param {Element} element - Elemen awal pencarian.
+ * @returns {Element|null} Elemen pembungkus atau null.
+ */
 const getContainingBlock = (element) => {
   let node = element?.parentElement
   while (node && node !== document.documentElement) {
@@ -22,12 +27,22 @@ const getContainingBlock = (element) => {
   return null
 }
 
+/**
+ * Mendapatkan offset koordinat (X dan Y) dari elemen pembungkus terdekat.
+ * @param {Element} block - Elemen pembungkus.
+ * @returns {Object} Koordinat offset { x, y }.
+ */
 const getContainingBlockOffset = (block) => {
   if (!block) return { x: 0, y: 0 }
   const rect = block.getBoundingClientRect()
   return { x: rect.left + block.clientLeft, y: rect.top + block.clientTop }
 }
 
+/**
+ * Komponen TargetCursor - Kursor kustom berbasis GSAP yang magnetis dan berubah bentuk membingkai elemen target saat di-hover.
+ * @param {Object} props
+ * ...
+ */
 const TargetCursor = ({
   targetSelector = '.cursor-target',
   spinDuration = 2,
@@ -66,6 +81,11 @@ const TargetCursor = ({
     []
   )
 
+  /**
+   * Menggerakkan kursor kustom ke koordinat mouse baru secara responsif.
+   * @param {number} x - Koordinat client X mouse.
+   * @param {number} y - Koordinat client Y mouse.
+   */
   const moveCursor = useCallback((x, y) => {
     if (!cursorRef.current) return
     const { x: offsetX, y: offsetY } = getContainingBlockOffset(containingBlockRef.current)
@@ -157,9 +177,11 @@ const TargetCursor = ({
 
     tickerFnRef.current = tickerFn
 
+    // INTERAKSI MOVE: Mengikuti posisi koordinat mouse
     const moveHandler = (e) => moveCursor(e.clientX, e.clientY)
     window.addEventListener('mousemove', moveHandler)
 
+    // INTERAKSI SCROLL: Menghapus status hover magnetis jika pengguna melakukan scroll hingga kursor menjauh dari target
     const scrollHandler = () => {
       if (!activeTarget || !cursorRef.current) return
       const { x: offsetX, y: offsetY } = getOffset()
@@ -211,6 +233,7 @@ const TargetCursor = ({
 
     window.addEventListener('scroll', scrollHandler, { passive: true })
 
+    // INTERAKSI MAGNET (MOUSEOVER): Menarik sudut kursor kustom untuk membingkai elemen target
     const mouseOverHandler = (e) => {
       if (!e.target || !(e.target instanceof Element)) return
       const target = e.target.closest(targetSelector)
@@ -229,6 +252,7 @@ const TargetCursor = ({
       const rect = target.getBoundingClientRect()
       const { borderWidth, cornerSize } = constants
       const { x: offsetX, y: offsetY } = getOffset()
+      // Hitung koordinat keempat sudut elemen target
       targetCornerPositionsRef.current = [
         { x: rect.left - borderWidth - offsetX, y: rect.top - borderWidth - offsetY },
         { x: rect.right + borderWidth - cornerSize - offsetX, y: rect.top - borderWidth - offsetY },
@@ -241,6 +265,7 @@ const TargetCursor = ({
           y: rect.bottom + borderWidth - cornerSize - offsetY,
         },
       ]
+      // Posisikan sudut kursor kustom melekat ke sudut elemen target menggunakan GSAP
       if (cornersRef.current) {
         const corners = Array.from(cornersRef.current)
         gsap.killTweensOf(corners)
@@ -265,8 +290,9 @@ const TargetCursor = ({
         duration: 0.3,
         ease: 'power3.out',
       })
-      spinTl.current?.pause()
+      spinTl.current?.pause() // Jeda animasi berputar default kursor saat menempel
 
+      // INTERAKSI MOUSELEAVE: Mengembalikan kursor kustom ke bentuk bulat semula
       currentLeaveHandler = () => {
         activeTarget = null
         isActiveRef.current = false
@@ -303,7 +329,7 @@ const TargetCursor = ({
         })
         resumeTimeout = setTimeout(() => {
           if (!isActiveRef.current) {
-            spinTl.current?.resume()
+            spinTl.current?.resume() // Jalankan kembali animasi berputar
           }
         }, 100)
       }
