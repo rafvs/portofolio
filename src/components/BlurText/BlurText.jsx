@@ -36,17 +36,14 @@ const BlurText = ({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true)
-          observer.disconnect()
-        }
+        if (entry.isIntersecting) setInView(true)
       },
       { threshold, rootMargin }
     )
 
     observer.observe(ref.current)
     return () => observer.disconnect()
-  }, [threshold, rootMargin])
+  }, [threshold, rootMargin, text])
 
   const defaultFrom = useMemo(
     () =>

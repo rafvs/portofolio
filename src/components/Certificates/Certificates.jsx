@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import useInView from '../../hooks/useInView.js'
 import BlurText from '../BlurText/BlurText.jsx'
 import './Certificates.css'
@@ -9,6 +10,7 @@ import './Certificates.css'
  * @returns {JSX.Element} Elemen section Certificates.
  */
 const Certificates = ({ className = '' }) => {
+  const { t } = useTranslation()
   // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
   // kapan section Sertifikat masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -10% 0px' })
@@ -19,11 +21,11 @@ const Certificates = ({ className = '' }) => {
         
         {/* BAGIAN HEADER SECTION: Menampilkan kicker dan judul dengan animasi BlurText */}
         <div className="section-heading">
-          <p className="section-kicker">04 / Sertifikat</p>
+          <p className="section-kicker">{t('sections.certificatesKicker')}</p>
           <div className={`section-heading__copy reveal${reveal ? ' is-visible' : ''}`} ref={revealRef}>
             {/* Animasi teks masuk dengan efek blur per kata */}
             <BlurText
-              text="Catatan proses belajar."
+              text={t('sections.certificatesTitle')}
               className="section-title"
               delay={60}
               animateBy="words"
@@ -31,17 +33,17 @@ const Certificates = ({ className = '' }) => {
               threshold={0.2}
               rootMargin="-80px"
             />
-            <p className="section-description">Ruang untuk menyimpan pencapaian dan pembelajaran yang sedang saya kumpulkan.</p>
+            <p className="section-description">{t('sections.certificatesDescription')}</p>
           </div>
         </div>
 
         {/* DATA SERTIFIKAT KOSONG (PLACEHOLDER):
             - Ditampilkan sebagai status sementara sebelum daftar sertifikat nyata dimasukkan. */}
-        <div className="certificate-empty reveal is-visible" aria-label="Daftar sertifikat kosong">
+        <div className="certificate-empty reveal is-visible" aria-label={t('certificates.emptyLabel')}>
           <span className="certificate-empty__number">01</span>
           <div>
-            <h3>Daftar sertifikat menyusul.</h3>
-            <p>Nama sertifikat, penerbit, dan tahun akan ditambahkan setelah data tersedia.</p>
+            <h3>{t('certificates.empty')}</h3>
+            <p>{t('certificates.emptyDescription')}</p>
           </div>
           <span className="certificate-empty__mark" aria-hidden="true">+</span>
         </div>

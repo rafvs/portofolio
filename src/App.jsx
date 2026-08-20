@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import TargetCursor from './components/TargetCursor/TargetCursor.jsx'
 import LoadingScreen from './components/LoadingScreen/LoadingScreen.jsx'
 import TextType from './components/TextType/TextType.jsx'
@@ -10,25 +11,27 @@ import Education from './components/Education/Education.jsx'
 import Certificates from './components/Certificates/Certificates.jsx'
 import Projects from './components/Projects/Projects.jsx'
 import TechStack from './components/TechStack/TechStack.jsx'
+import LikeButton from './components/LikeButton/LikeButton.jsx'
 import Footer from './components/Footer/Footer.jsx'
+import CVModal from './components/CVModal/CVModal.jsx'
 import heroImage from './assets/hero-photo.webp'
 import frontImage from './assets/front-photo.webp'
 import profileGif from './assets/profile.gif'
 import './App.css'
 
 const NAV_ITEMS = [
-  { label: 'Karya', href: '#projects' },
-  { label: 'Pengalaman', href: '#pengalaman' },
-  { label: 'Pendidikan', href: '#education' },
-  { label: 'Sertifikat', href: '#certificates' },
-  { label: 'Stack', href: '#stack' },
-  { label: 'Kontak', href: '#footer' },
+  { key: 'works', href: '#projects' },
+  { key: 'experience', href: '#pengalaman' },
+  { key: 'education', href: '#education' },
+  { key: 'certificates', href: '#certificates' },
+  { key: 'stack', href: '#stack' },
+  { key: 'contact', href: '#footer' },
 ]
 
 const HERO_STATS = [
-  { num: 5, suffix: '+', label: 'Proyek Web' },
-  { num: 3, suffix: '+', label: 'Tahun Belajar' },
-  { num: 10, suffix: '+', label: 'Teknologi' },
+  { num: 5, suffix: '+', labelKey: 'hero.statProjects' },
+  { num: 3, suffix: '+', labelKey: 'hero.statLearning' },
+  { num: 10, suffix: '+', labelKey: 'hero.statTechnology' },
 ]
 
 /**
@@ -68,11 +71,13 @@ function ThemeIcon({ theme }) {
  * @returns {JSX.Element} Elemen utama aplikasi.
  */
 function App() {
+  const { t, i18n } = useTranslation()
   const [loading, setLoading] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
   const [theme, setTheme] = useState(getInitialTheme)
   const [photoRevealed, setPhotoRevealed] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [cvOpen, setCvOpen] = useState(false)
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -90,13 +95,16 @@ function App() {
 
   const closeMenu = () => setMenuOpen(false)
   const toggleTheme = () => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
+  const currentLanguage = i18n.resolvedLanguage || i18n.language || 'id'
+  const nextLanguage = currentLanguage === 'id' ? 'en' : 'id'
+  const toggleLanguage = () => i18n.changeLanguage(nextLanguage)
 
   return (
     <div className={`app-shell${!loading ? ' is-ready' : ''}`}>
       {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
       <TargetCursor spinDuration={2.5} />
       <header className={`site-header${scrolled ? ' is-scrolled' : ''}`}>
-        <nav className="nav-bar" aria-label="Navigasi utama">
+        <nav className="nav-bar" aria-label={t('nav.label')}>
           <a className="nav-logo cursor-target" href="#top" onClick={closeMenu}>
             Nerravs<span aria-hidden="true">.</span>
           </a>
@@ -104,7 +112,7 @@ function App() {
           <div className="nav-links">
             {NAV_ITEMS.map((item) => (
               <a key={item.href} href={item.href} className="nav-link cursor-target">
-                {item.label}
+                {t(`nav.${item.key}`)}
               </a>
             ))}
           </div>
@@ -113,17 +121,27 @@ function App() {
             <button
               type="button"
               className="theme-toggle"
-              aria-label={`Aktifkan mode ${theme === 'dark' ? 'terang' : 'gelap'}`}
-              title={`Mode ${theme === 'dark' ? 'terang' : 'gelap'}`}
+              aria-label={theme === 'dark' ? t('nav.switchToLight') : t('nav.switchToDark')}
+              title={theme === 'dark' ? t('nav.switchToLight') : t('nav.switchToDark')}
               onClick={toggleTheme}
             >
               <ThemeIcon theme={theme} />
             </button>
-            <a className="button button--small nav-cta cursor-target" href="#footer">Hubungi Saya</a>
+            <button
+              type="button"
+              className="theme-toggle language-toggle cursor-target"
+              aria-label={nextLanguage === 'en' ? t('nav.switchToEnglish') : t('nav.switchToIndonesian')}
+              title={nextLanguage === 'en' ? t('nav.switchToEnglish') : t('nav.switchToIndonesian')}
+              onClick={toggleLanguage}
+            >
+              <span aria-hidden="true">{currentLanguage === 'id' ? 'ID' : 'EN'}</span>
+            </button>
+            <LikeButton />
+            <a className="button button--small nav-cta cursor-target" href="#footer">{t('nav.contact')}</a>
             <button
               type="button"
               className="nav-burger"
-              aria-label={menuOpen ? 'Tutup menu' : 'Buka menu'}
+              aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
             >
@@ -136,10 +154,10 @@ function App() {
         <div className={`nav-mobile${menuOpen ? ' is-open' : ''}`}>
           {NAV_ITEMS.map((item) => (
             <a key={item.href} href={item.href} className="nav-mobile__link cursor-target" onClick={closeMenu}>
-              {item.label}
+              {t(`nav.${item.key}`)}
             </a>
           ))}
-          <a className="nav-mobile__cta cursor-target" href="#footer" onClick={closeMenu}>Hubungi Saya</a>
+          <a className="nav-mobile__cta cursor-target" href="#footer" onClick={closeMenu}>{t('nav.contact')}</a>
         </div>
       </header>
 
@@ -147,14 +165,12 @@ function App() {
         <section className="hero-section" id="top">
           <div className="hero-grid">
             <div className="hero-left">
-              <p className="hero-kicker"><span /> Frontend Developer &amp; Digital Designer</p>
+              <p className="hero-kicker"><span /> {t('hero.eyebrow')}</p>
               <TextType
+                key={currentLanguage}
                 as="h1"
                 className="hero-headline"
-                text={[
-                  "Selamat datang di dunia kreatif.",
-                  "Ide yang baik layak tampil dengan jelas."
-                ]}
+                text={t('hero.typingTexts', { returnObjects: true })}
                 typingSpeed={65}
                 deletingSpeed={35}
                 pauseDuration={2500}
@@ -165,7 +181,7 @@ function App() {
                 startWhen={!loading}
               />
               <BlurText
-                text="Saya Muhammad Rafi. Saya merancang dan membangun pengalaman digital yang sederhana, responsif, dan mudah digunakan."
+                text={t('hero.intro')}
                 className="hero-sub"
                 delay={40}
                 animateBy="words"
@@ -175,17 +191,24 @@ function App() {
               />
 
               <div className="hero-cta">
-                <a className="button cursor-target" href="#projects">Lihat Karya <span aria-hidden="true">↘</span></a>
-                <a className="button button--secondary cursor-target" href="#education">Tentang Saya</a>
+                <a className="button cursor-target" href="#projects">{t('hero.viewWorks')} <span aria-hidden="true">↘</span></a>
+                <a className="button button--secondary cursor-target" href="#education">{t('hero.about')}</a>
+                <button
+                  type="button"
+                  className="button button--secondary cursor-target"
+                  onClick={() => setCvOpen(true)}
+                >
+                  {t('hero.cv')}
+                </button>
               </div>
 
-              <ul className="hero-stats" aria-label="Ringkasan pengalaman">
+              <ul className="hero-stats" aria-label={t('hero.statsLabel')}>
                 {HERO_STATS.map((stat) => (
-                  <li key={stat.label} className="hero-stat">
+                  <li key={stat.labelKey} className="hero-stat">
                     <span className="hero-stat__value">
                       <CountUp from={0} to={stat.num} duration={2.5} startWhen={!loading} />{stat.suffix}
                     </span>
-                    <span className="hero-stat__label">{stat.label}</span>
+                    <span className="hero-stat__label">{t(stat.labelKey)}</span>
                   </li>
                 ))}
               </ul>
@@ -214,7 +237,7 @@ function App() {
                   <img
                     className="hero-photo__gif"
                     src={profileGif}
-                    alt="Muhammad Rafi animation"
+                    alt={t('hero.gifAlt')}
                     width="900"
                     height="900"
                     decoding="async"
@@ -222,7 +245,7 @@ function App() {
                   <img
                     className="hero-photo__main"
                     src={heroImage}
-                    alt="Muhammad Rafi sedang menggunakan kamera"
+                    alt={t('hero.cameraAlt')}
                     width="900"
                     height="900"
                     fetchPriority="high"
@@ -232,7 +255,7 @@ function App() {
               </GlareHover>
               <figcaption>
                 <span>Samarinda, Indonesia</span>
-                <span className="hero-availability"><i /> Terbuka untuk kolaborasi</span>
+                <span className="hero-availability"><i /> {t('hero.openForCollaboration')}</span>
               </figcaption>
             </figure>
           </div>
@@ -246,6 +269,9 @@ function App() {
       </main>
 
       <Footer className="deferred-section" />
+
+      {/* MODAL PREVIEW CV */}
+      <CVModal open={cvOpen} onClose={() => setCvOpen(false)} />
     </div>
   )
 }

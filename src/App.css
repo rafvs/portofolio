@@ -13,24 +13,24 @@
   position: sticky;
   top: 0;
   z-index: 20;
+  /* Padding vertikal untuk ruang kapsul saat scroll */
+  padding: 0;
   border-bottom: 1px solid var(--border);
   background: var(--bg);
   transition:
-    background 0.35s ease,
-    border-color 0.35s ease,
-    backdrop-filter 0.35s ease,
-    box-shadow 0.35s ease;
+    padding 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.4s ease,
+    background 0.4s ease;
 }
 
-/* Header blur saat di-scroll */
+/* ── SCROLLED: kapsul glassmorphism mengambang ── */
 .site-header.is-scrolled {
-  background: color-mix(in srgb, var(--bg) 55%, transparent);
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-  border-bottom-color: color-mix(in srgb, var(--border) 60%, transparent);
-  box-shadow: 0 8px 32px -12px rgba(0, 0, 0, 0.35);
+  padding: 0.6rem 1rem;
+  border-bottom-color: transparent;
+  background: transparent;
 }
 
+/* Nav-bar: default full-width */
 .nav-bar {
   display: flex;
   align-items: center;
@@ -38,7 +38,31 @@
   width: min(1240px, calc(100% - 4rem));
   min-height: 74px;
   margin-inline: auto;
+  border-radius: 0;
+  transition:
+    min-height 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    padding 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.4s ease,
+    backdrop-filter 0.4s ease,
+    box-shadow 0.4s ease,
+    border-color 0.4s ease;
 }
+
+/* Nav-bar: saat scroll → kapsul */
+.site-header.is-scrolled .nav-bar {
+  min-height: 52px;
+  padding: 0 1.25rem;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid color-mix(in srgb, var(--border-strong) 50%, transparent);
+  box-shadow:
+    0 4px 24px -4px color-mix(in srgb, var(--shadow) 80%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--surface) 30%, transparent);
+}
+
 
 .nav-logo {
   color: var(--text);
@@ -165,6 +189,24 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 1.5;
+}
+
+.language-toggle {
+  min-width: 38px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.language-toggle:hover,
+.language-toggle:focus-visible {
+  border-color: var(--solid);
+  background: var(--surface-muted);
 }
 
 .nav-burger {
@@ -651,5 +693,185 @@
 
   .hero-visual figcaption {
     flex-direction: column;
+  }
+}
+
+/* ============================================================
+   CV MODAL
+   ============================================================ */
+.cv-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.cv-modal {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  width: min(900px, 100%);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 64px -12px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.cv-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.cv-modal-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.cv-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cv-modal-actions .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cv-modal-actions .button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.cv-modal-actions .button.is-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.cv-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cv-modal-close:hover {
+  background: var(--bg-secondary);
+  color: var(--text);
+  border-color: var(--text-tertiary);
+}
+
+.cv-modal-close svg {
+  width: 18px;
+  height: 18px;
+}
+
+.cv-modal-content {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: #525659;
+  min-height: 400px;
+  padding: 1rem;
+}
+
+.cv-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  margin: 0;
+  color: #e8e8e8;
+  font-size: 0.9rem;
+}
+
+.cv-page {
+  display: flex;
+  justify-content: center;
+}
+
+.cv-page + .cv-page {
+  margin-top: 1rem;
+}
+
+.cv-page canvas {
+  max-width: 100%;
+  height: auto !important;
+  border-radius: 4px;
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive untuk modal */
+@media (max-width: 640px) {
+  .cv-modal {
+    max-height: 95vh;
+    border-radius: 12px;
+  }
+  
+  .cv-modal-header {
+    padding: 0.875rem 1rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  
+  .cv-modal-title {
+    font-size: 1rem;
+  }
+  
+  .cv-modal-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .cv-modal-content {
+    min-height: 300px;
+    padding: 0.75rem;
   }
 }

@@ -30,6 +30,8 @@ const AccordionGallery = ({
   showLabels = true,
   grayscale = true,
   className = '',
+  onCardClick = null,
+  ariaLabel = 'Image accordion gallery',
 }) => {
   const rootRef = useRef(null)
   const panelRefs = useRef([])
@@ -183,13 +185,16 @@ const AccordionGallery = ({
 
   /**
    * INTERAKSI KLIK:
-   * Handler klik panel. Jika panel yang diklik belum aktif, interaksi default link dibatalkan
-   * dan panel tersebut akan dibuka terlebih dahulu.
+   * - Jika panel belum aktif: aktifkan panel tersebut.
+   * - Jika panel sudah aktif dan ada callback onCardClick: buka modal preview.
    */
   const handleClick = (i, e) => {
     if (i !== active) {
       e.preventDefault()
       setActive(i)
+    } else if (onCardClick) {
+      e.preventDefault()
+      onCardClick(items[i])
     }
   }
 
@@ -221,7 +226,7 @@ const AccordionGallery = ({
         height: vertical ? `${Math.round(height * 1.6)}px` : `${height}px`,
       }}
       role="list"
-      aria-label="Image accordion gallery"
+      aria-label={ariaLabel}
     >
       {items.map((item, i) => {
         const isActive = i === active

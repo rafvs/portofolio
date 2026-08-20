@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
+import { useTranslation } from 'react-i18next'
 import './LoadingScreen.css'
 
 const GREETINGS = [
@@ -26,6 +27,7 @@ const FADE_OUT = 0.12
  * @returns {JSX.Element} Elemen layar pemuatan.
  */
 const LoadingScreen = ({ onComplete }) => {
+  const { t } = useTranslation()
   const containerRef = useRef(null)
   const textRef = useRef(null)
   const langRef = useRef(null)
@@ -131,7 +133,7 @@ const LoadingScreen = ({ onComplete }) => {
       </div>
 
       <div className="loading-screen__status" ref={statusRef}>
-        <span className="loading-screen__reading">Memuat...</span>
+        <span className="loading-screen__reading">{t('loading.reading')}</span>
         <span className="loading-screen__counter" ref={counterNumberRef}>0%</span>
       </div>
 

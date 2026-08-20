@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import useInView from '../../hooks/useInView.js'
 import SplitText from '../SplitText/SplitText.jsx'
 import './Footer.css'
@@ -5,7 +6,7 @@ import './Footer.css'
 const CONTACT_ITEMS = [
   {
     name: 'WhatsApp',
-    value: 'Hubungi',
+    valueKey: 'whatsapp',
     href: 'https://wa.me/6289630415126',
     isExternal: true,
     icon: (
@@ -59,6 +60,7 @@ const CONTACT_ITEMS = [
  * @returns {JSX.Element} Elemen footer halaman.
  */
 const Footer = ({ className = '' }) => {
+  const { t } = useTranslation()
   // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
   // kapan footer masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -5% 0px' })
@@ -74,14 +76,14 @@ const Footer = ({ className = '' }) => {
           <div>
             <div className="footer-header-brand">
               <img src="/logo.png" alt="Nerravs Logo" className="footer-logo-img" />
-              <p className="section-kicker">06 / Kontak</p>
+              <p className="section-kicker">{t('sections.contactKicker')}</p>
             </div>
             
             {/* Animasi memecah kata (SplitText) untuk judul footer */}
             <SplitText
               tag="h2"
               className="footer-title"
-              text="Mari membuat sesuatu yang berarti."
+              text={t('sections.contactTitle')}
               splitType="words"
               delay={60}
               duration={0.7}
@@ -91,7 +93,7 @@ const Footer = ({ className = '' }) => {
               rootMargin="-80px"
               textAlign="left"
             />
-            <p className="footer-copy">Punya ide, proyek, atau sekadar ingin bertukar cerita? Saya terbuka untuk mendengar dan berdiskusi.</p>
+            <p className="footer-copy">{t('sections.contactDescription')}</p>
           </div>
 
           {/* DAFTAR KONTAK SOSIAL MEDIA */}
@@ -109,7 +111,7 @@ const Footer = ({ className = '' }) => {
                   {item.name}
                 </span>
                 <strong>
-                  {item.value} <i aria-hidden="true">↗</i>
+                  {item.valueKey ? t(`footer.${item.valueKey}`) : item.value} <i aria-hidden="true">↗</i>
                 </strong>
               </a>
             ))}
@@ -122,7 +124,7 @@ const Footer = ({ className = '' }) => {
             <img src="/logo.png" alt="Logo" className="footer-bottom__logo" />
             <span>© 2026 Muhammad Rafi</span>
           </div>
-          <span>Nerravs / Portfolio</span>
+          <span>{t('footer.portfolio')}</span>
         </div>
       </div>
     </footer>

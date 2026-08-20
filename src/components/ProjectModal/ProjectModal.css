@@ -1,0 +1,388 @@
+/* ────────────────────────────────────────────────
+   BACKDROP  –  fixed, selalu di tengah viewport
+   ──────────────────────────────────────────────── */
+.pm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100dvh;
+  padding: 20px;
+  background: transparent;
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  transition:
+    background 0.35s ease,
+    backdrop-filter 0.35s ease;
+  pointer-events: none;
+  /* ⚠️  JANGAN tambahkan overflow-y di sini –
+        backdrop harus full-screen & tetap */
+}
+
+.pm-backdrop--visible {
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  pointer-events: auto;
+}
+
+/* Light mode backdrop sedikit lebih terang */
+:root[data-theme='light'] .pm-backdrop--visible {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* ────────────────────────────────────────────────
+   MODAL  –  ukuran tetap, tidak overflow viewport
+   ──────────────────────────────────────────────── */
+.pm-modal {
+  --pm-radius: 16px;
+  position: relative;
+  display: flex;
+  flex-direction: row;          /* side-by-side default */
+  width: min(900px, calc(100vw - 40px));
+  height: min(540px, calc(100dvh - 40px));
+  border-radius: var(--pm-radius);
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 48px 100px -20px rgba(0, 0, 0, 0.55),
+    0 0 0 1px color-mix(in srgb, var(--border) 60%, transparent);
+  opacity: 0;
+  transform: translateY(24px) scale(0.97);
+  transition:
+    opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
+}
+
+.pm-modal--visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ────────────────────────────────────────────────
+   CLOSE BUTTON
+   ──────────────────────────────────────────────── */
+.pm-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 20;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.2s, border-color 0.2s;
+}
+
+.pm-close:hover {
+  background: var(--border);
+  color: var(--text);
+  transform: scale(1.08);
+}
+
+/* ────────────────────────────────────────────────
+   SLIDER  –  kolom kiri, tinggi mengikuti modal
+   ──────────────────────────────────────────────── */
+.pm-slider {
+  position: relative;
+  flex: 0 0 52%;
+  min-width: 0;
+  overflow: hidden;
+  background: #080810;
+  user-select: none;
+  border-radius: var(--pm-radius) 0 0 var(--pm-radius);
+}
+
+.pm-slider__track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.44s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.pm-slider__slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+}
+
+.pm-slider__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Arrow buttons */
+.pm-slider__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.pm-slider__arrow--prev { left: 12px; }
+.pm-slider__arrow--next { right: 12px; }
+
+.pm-slider__arrow:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* Dots */
+.pm-slider__dots {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 6;
+}
+
+.pm-slider__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition: background 0.22s, transform 0.22s, width 0.22s;
+  padding: 0;
+}
+
+.pm-slider__dot--active {
+  background: #fff;
+  width: 20px;
+  border-radius: 4px;
+  transform: none;
+}
+
+/* Counter badge */
+.pm-slider__counter {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.52);
+  backdrop-filter: blur(6px);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  z-index: 6;
+}
+
+/* ────────────────────────────────────────────────
+   INFO PANEL  –  kolom kanan, scroll internal
+   ──────────────────────────────────────────────── */
+.pm-info {
+  flex: 1;
+  min-width: 0;
+  padding: 28px 26px 28px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.pm-info::-webkit-scrollbar { width: 4px; }
+.pm-info::-webkit-scrollbar-track { background: transparent; }
+.pm-info::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+/* Header: judul + tombol github */
+.pm-info__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-right: 36px; /* beri ruang untuk tombol close */
+}
+
+.pm-info__title {
+  margin: 0;
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.pm-info__github {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.pm-info__github:hover {
+  background: var(--border);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+/* Deskripsi */
+.pm-info__full-desc {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.72;
+}
+
+/* Stack wrap & features wrap */
+.pm-info__stack-wrap,
+.pm-info__features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Label section kecil */
+.pm-info__stack-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* Tag baris stack */
+.pm-info__stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pm-info__tag {
+  padding: 4px 12px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Fitur list */
+.pm-info__features-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pm-info__features-list li {
+  position: relative;
+  padding-left: 18px;
+  color: var(--text-secondary);
+  font-size: 0.855rem;
+  line-height: 1.55;
+}
+
+.pm-info__features-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--border-strong);
+}
+
+/* ────────────────────────────────────────────────
+   MOBILE  (< 600px)  –  bottom-sheet style
+   ──────────────────────────────────────────────── */
+@media (max-width: 599px) {
+  .pm-backdrop {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .pm-modal {
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    max-height: 90svh;
+    border-radius: var(--pm-radius) var(--pm-radius) 0 0;
+    transform: translateY(48px);
+  }
+
+  .pm-modal--visible {
+    transform: translateY(0);
+  }
+
+  .pm-slider {
+    flex: 0 0 auto;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--pm-radius) var(--pm-radius) 0 0;
+  }
+
+  .pm-info {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 20px;
+    max-height: 50svh;
+  }
+
+  .pm-info__header {
+    padding-right: 0;
+  }
+}
+
+/* Tablet: kolom kiri sedikit lebih lebar */
+@media (min-width: 600px) and (max-width: 860px) {
+  .pm-modal {
+    width: calc(100vw - 32px);
+    height: min(500px, calc(100vh - 40px));
+  }
+
+  .pm-slider {
+    flex: 0 0 48%;
+  }
+}

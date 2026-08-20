@@ -13,6 +13,7 @@
  */
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import './i18n' // Konfigurasi bahasa Indonesia/Inggris
 import './index.css' // Gaya global: reset, variabel CSS, utilitas dasar
 import App from './App.jsx' // Komponen utama berisi seluruh halaman
 

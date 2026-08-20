@@ -137,6 +137,7 @@ const SplitText = ({
         delay,
         duration,
         ease,
+        text,
         splitType,
         JSON.stringify(from),
         JSON.stringify(to),
