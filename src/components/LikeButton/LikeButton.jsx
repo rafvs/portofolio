@@ -6,6 +6,7 @@ export default function LikeButton() {
   const [likes, setLikes] = useState(0)
   const [hasLiked, setHasLiked] = useState(false)
   const [animating, setAnimating] = useState(false)
+  const [isUpdating, setIsUpdating] = useState(false)
 
   useEffect(() => {
     const likedInStorage = localStorage.getItem('nerravs_has_liked') === 'true'
@@ -33,15 +34,24 @@ export default function LikeButton() {
   }, [])
 
   const handleLike = async () => {
-    const newLikes = likes + 1
-    setLikes(newLikes)
-    setHasLiked(true)
-    setAnimating(true)
+    // Cegah klik ganda yang cepat (spam klik) saat request sedang diproses
+    if (isUpdating) return
 
-    setTimeout(() => setAnimating(false), 600)
+    setIsUpdating(true)
+    const isUndoing = hasLiked
+    const newLikes = isUndoing ? Math.max(0, likes - 1) : likes + 1
+
+    // Update state local agar instant (Optimistic Update)
+    setLikes(newLikes)
+    setHasLiked(!isUndoing)
+    localStorage.setItem('nerravs_has_liked', (!isUndoing).toString())
+
+    if (!isUndoing) {
+      setAnimating(true)
+      setTimeout(() => setAnimating(false), 600)
+    }
 
     try {
-      // Menggunakan update langsung ke row 'main'
       const { error } = await supabase
         .from('site_like')
         .update({ count: newLikes })
@@ -49,11 +59,19 @@ export default function LikeButton() {
 
       if (error) {
         console.error('Supabase update error:', error.message || error)
-      } else {
-        console.log('Successfully updated likes to:', newLikes)
+        // Rollback state jika query gagal
+        setLikes(likes)
+        setHasLiked(hasLiked)
+        localStorage.setItem('nerravs_has_liked', hasLiked.toString())
       }
     } catch (err) {
       console.error('Error updating likes:', err)
+      // Rollback state
+      setLikes(likes)
+      setHasLiked(hasLiked)
+      localStorage.setItem('nerravs_has_liked', hasLiked.toString())
+    } finally {
+      setIsUpdating(false)
     }
   }
 
@@ -62,8 +80,9 @@ export default function LikeButton() {
       type="button"
       className={`like-button cursor-target${hasLiked ? ' is-liked' : ''}${animating ? ' is-pop' : ''}`}
       onClick={handleLike}
-      title="Sukai website portofolio ini"
-      aria-label="Sukai portofolio"
+      disabled={isUpdating}
+      title={hasLiked ? 'Batalkan suka' : 'Sukai website portofolio ini'}
+      aria-label={hasLiked ? 'Batalkan suka' : 'Sukai portofolio'}
     >
       <svg
         className="like-button__icon"

@@ -13,7 +13,6 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  /* Padding vertikal untuk ruang kapsul saat scroll */
   padding: 0;
   border-bottom: 1px solid var(--border);
   background: var(--bg);
@@ -28,6 +27,12 @@
   padding: 0.6rem 1rem;
   border-bottom-color: transparent;
   background: transparent;
+}
+
+@media (max-width: 480px) {
+  .site-header.is-scrolled {
+    padding: 0.5rem 0.5rem; /* Padding lebih rapat di layar sangat kecil */
+  }
 }
 
 /* Nav-bar: default full-width */
@@ -62,6 +67,13 @@
     0 4px 24px -4px color-mix(in srgb, var(--shadow) 80%, transparent),
     inset 0 1px 0 color-mix(in srgb, var(--surface) 30%, transparent);
 }
+
+@media (max-width: 480px) {
+  .site-header.is-scrolled .nav-bar {
+    padding: 0 0.75rem; /* Padding dalam kapsul lebih hemat ruang */
+  }
+}
+
 
 
 .nav-logo {
@@ -652,6 +664,10 @@
     min-height: 66px;
   }
 
+  .nav-actions {
+    gap: 0.45rem; /* Gap lebih kecil di mobile */
+  }
+
   .hero-section {
     min-height: auto;
   }
@@ -671,6 +687,36 @@
     justify-self: center;
   }
 }
+
+@media (max-width: 480px) {
+  .nav-logo {
+    font-size: 1.05rem; /* Logo lebih kecil di mobile kecil */
+  }
+
+  .nav-actions {
+    gap: 0.3rem; /* Sangat rapat di mobile kecil */
+  }
+
+  .like-button {
+    height: 34px;
+    padding: 0 0.5rem;
+    gap: 0.25rem;
+    font-size: 0.72rem;
+  }
+
+  .like-button__icon {
+    width: 13px;
+    height: 13px;
+  }
+
+  .theme-toggle,
+  .language-toggle {
+    width: 34px;
+    height: 34px;
+    font-size: 0.68rem;
+  }
+}
+
 
 /* ============================================================
    RESPONSIVE — SMALL MOBILE (≤480px)
