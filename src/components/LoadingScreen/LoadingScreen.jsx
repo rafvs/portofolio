@@ -15,10 +15,10 @@ const GREETINGS = [
 ]
 
 const INTRO = 0.2
-const FADE_IN = 0.18
-const HOLD = 0.3
-const LAST_HOLD = 0.8
-const FADE_OUT = 0.12
+const FADE_IN = 0.10
+const HOLD = 0.2
+const LAST_HOLD = 0.5
+const FADE_OUT = 0.09
 
 /**
  * Komponen LoadingScreen - Layar pemuatan awal (splash screen) dengan pesan sambutan multi-bahasa dan persentase loader.
