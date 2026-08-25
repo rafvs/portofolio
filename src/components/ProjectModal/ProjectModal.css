@@ -99,13 +99,17 @@
   flex: 0 0 52%;
   min-width: 0;
   overflow: hidden;
-  background: #080810;
+  background: #ffffff;
   user-select: none;
   border-radius: var(--pm-radius) 0 0 var(--pm-radius);
+  /* Pastikan tinggi slider terdefinisi untuk contain bekerja */
+  display: flex;
+  flex-direction: column;
 }
 
 .pm-slider__track {
   display: flex;
+  flex: 1 1 auto;       /* isi sisa tinggi slider */
   width: 100%;
   height: 100%;
   transition: transform 0.44s cubic-bezier(0.22, 1, 0.36, 1);
@@ -116,12 +120,17 @@
   flex: 0 0 100%;
   width: 100%;
   height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  overflow: hidden;
 }
 
 .pm-slider__slide img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;  /* tampil penuh, tanpa crop */
   display: block;
 }
 
@@ -169,14 +178,14 @@
   height: 6px;
   border-radius: 50%;
   border: none;
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.25);
   cursor: pointer;
   transition: background 0.22s, transform 0.22s, width 0.22s;
   padding: 0;
 }
 
 .pm-slider__dot--active {
-  background: #fff;
+  background: rgba(0, 0, 0, 0.8);
   width: 20px;
   border-radius: 4px;
   transform: none;

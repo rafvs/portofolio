@@ -79,5 +79,6 @@
 
   .experience-card__image-wrap {
     width: min(100%, 220px);
+    justify-self: center;
   }
 }
