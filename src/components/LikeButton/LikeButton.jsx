@@ -14,7 +14,12 @@ function getDeviceId() {
 
 export default function LikeButton() {
   const [likes, setLikes] = useState(0)
-  const [hasLiked, setHasLiked] = useState(false)
+  const [hasLiked, setHasLiked] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(`nerravs_liked_${getDeviceId()}`) === 'true'
+    }
+    return false
+  })
   const [animating, setAnimating] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
 
@@ -38,10 +43,6 @@ export default function LikeButton() {
     }
 
     fetchLikes()
-
-    // Set state liked dari localStorage device ini
-    const liked = localStorage.getItem(`nerravs_liked_${getDeviceId()}`) === 'true'
-    setHasLiked(liked)
   }, [])
 
   const COOLDOWN_MS = 1500

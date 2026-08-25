@@ -173,7 +173,12 @@ function App() {
                 key={currentLanguage}
                 as="h1"
                 className="hero-headline"
-                text={profile?.[`tagline_${contentLanguage}`] ? [profile[`tagline_${contentLanguage}`]] : t('hero.typingTexts', { returnObjects: true })}
+                text={(() => {
+                  const t1 = profile?.[`tagline_${contentLanguage}`]
+                  const t2 = profile?.[`tagline2_${contentLanguage}`]
+                  if (t1 || t2) return [t1, t2].filter(Boolean)
+                  return t('hero.typingTexts', { returnObjects: true })
+                })()}
                 typingSpeed={65}
                 deletingSpeed={35}
                 pauseDuration={2500}
