@@ -1,16 +1,24 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import './LikeButton.css'
 
+// Buat atau ambil device ID yang unik per browser/device
+function getDeviceId() {
+  let id = localStorage.getItem('nerravs_device_id')
+  if (!id) {
+    id = crypto.randomUUID()
+    localStorage.setItem('nerravs_device_id', id)
+  }
+  return id
+}
+
 export default function LikeButton() {
-  const initialLiked = localStorage.getItem('nerravs_has_liked') === 'true'
   const [likes, setLikes] = useState(0)
-  const [hasLiked, setHasLiked] = useState(initialLiked)
+  const [hasLiked, setHasLiked] = useState(false)
   const [animating, setAnimating] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
-  // Simpan nilai DB terbaru untuk rollback yang akurat
-  const dbCountRef = useRef(0)
 
+  // Ambil like count dari DB saat mount
   useEffect(() => {
     async function fetchLikes() {
       const { data, error } = await supabase
@@ -25,55 +33,60 @@ export default function LikeButton() {
       }
 
       if (data) {
-        console.log('[LikeButton] fetched count:', data.count)
         setLikes(data.count)
-        dbCountRef.current = data.count
-      } else {
-        console.warn('[LikeButton] row "main" not found in site_like table')
       }
     }
+
     fetchLikes()
+
+    // Set state liked dari localStorage device ini
+    const liked = localStorage.getItem(`nerravs_liked_${getDeviceId()}`) === 'true'
+    setHasLiked(liked)
   }, [])
 
-  const COOLDOWN_MS = 2000
+  const COOLDOWN_MS = 1500
 
   const handleLike = async () => {
     if (isUpdating) return
 
-    const lastLikeTime = Number(localStorage.getItem('nerravs_last_like_time') || 0)
-    if (Date.now() - lastLikeTime < COOLDOWN_MS) return
+    const lastTime = Number(localStorage.getItem('nerravs_last_like_time') || 0)
+    if (Date.now() - lastTime < COOLDOWN_MS) return
 
     setIsUpdating(true)
+    const deviceId = getDeviceId()
     const isUndoing = hasLiked
-    const newCount = isUndoing ? Math.max(0, dbCountRef.current - 1) : dbCountRef.current + 1
 
-    // Optimistic update
-    setLikes(newCount)
+    // Optimistic UI update
     setHasLiked(!isUndoing)
-    localStorage.setItem('nerravs_has_liked', String(!isUndoing))
+    setLikes(prev => isUndoing ? Math.max(0, prev - 1) : prev + 1)
+    localStorage.setItem(`nerravs_liked_${deviceId}`, String(!isUndoing))
 
     if (!isUndoing) {
       setAnimating(true)
       setTimeout(() => setAnimating(false), 600)
     }
 
-    console.log('[LikeButton] updating count in DB:', newCount)
-
-    const { error } = await supabase
-      .from('site_like')
-      .update({ count: newCount })
-      .eq('id', 'main')
+    // Panggil RPC atomic di Supabase
+    const rpcName = isUndoing ? 'decrement_like' : 'increment_like'
+    const { error } = await supabase.rpc(rpcName)
 
     if (error) {
-      console.error('[LikeButton] update error:', error)
-      // Rollback ke nilai DB terakhir yang diketahui
-      setLikes(dbCountRef.current)
+      console.error('[LikeButton] RPC error:', error)
+      // Rollback UI jika gagal
       setHasLiked(isUndoing)
-      localStorage.setItem('nerravs_has_liked', String(isUndoing))
+      setLikes(prev => isUndoing ? prev + 1 : Math.max(0, prev - 1))
+      localStorage.setItem(`nerravs_liked_${deviceId}`, String(isUndoing))
     } else {
-      console.log('[LikeButton] saved to DB successfully:', newCount)
-      dbCountRef.current = newCount
       localStorage.setItem('nerravs_last_like_time', String(Date.now()))
+
+      // Ambil count terbaru dari DB setelah update
+      const { data } = await supabase
+        .from('site_like')
+        .select('count')
+        .eq('id', 'main')
+        .maybeSingle()
+
+      if (data) setLikes(data.count)
     }
 
     setIsUpdating(false)
@@ -103,4 +116,3 @@ export default function LikeButton() {
     </button>
   )
 }
-
