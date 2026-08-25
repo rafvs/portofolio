@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import useInView from '../../hooks/useInView.js'
+import useSupabaseContent from '../../hooks/useSupabaseContent.js'
 import SplitText from '../SplitText/SplitText.jsx'
 import './Footer.css'
 
@@ -61,6 +62,7 @@ const CONTACT_ITEMS = [
  */
 const Footer = ({ className = '' }) => {
   const { t } = useTranslation()
+  const profile = useSupabaseContent('profiles', { single: true })
   // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
   // kapan footer masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -5% 0px' })
@@ -98,23 +100,29 @@ const Footer = ({ className = '' }) => {
 
           {/* DAFTAR KONTAK SOSIAL MEDIA */}
           <div className="footer-contacts">
-            {CONTACT_ITEMS.map((item) => (
+            {CONTACT_ITEMS.map((item) => {
+              const remoteValue = profile?.contact?.[item.name.toLowerCase()]
+              const href = remoteValue
+                ? item.name === 'Email' ? `mailto:${remoteValue}` : item.name === 'WhatsApp' ? `https://wa.me/${remoteValue.replace(/\D/g, '')}` : remoteValue.startsWith('http') ? remoteValue : `https://${remoteValue}`
+                : item.href
+              return (
               <a
                 key={item.name}
                 className="footer-contact cursor-target"
-                href={item.href}
+                href={href}
                 target={item.isExternal ? '_blank' : undefined}
                 rel={item.isExternal ? 'noopener noreferrer' : undefined}
+                aria-label={item.name}
               >
-                <span className="footer-contact__label">
+                <span className="footer-contact__icon-wrap">
                   <span className="footer-contact__icon">{item.icon}</span>
-                  {item.name}
                 </span>
-                <strong>
-                  {item.valueKey ? t(`footer.${item.valueKey}`) : item.value} <i aria-hidden="true">↗</i>
-                </strong>
+                <span className="footer-contact__name">
+                  {item.name}
+                  <span className="footer-contact__arrow" aria-hidden="true">↗</span>
+                </span>
               </a>
-            ))}
+            )})}
           </div>
         </div>
 
@@ -122,7 +130,7 @@ const Footer = ({ className = '' }) => {
         <div className="footer-bottom">
           <div className="footer-bottom__brand">
             <img src="/logo.png" alt="Logo" className="footer-bottom__logo" />
-            <span>© 2026 Muhammad Rafi</span>
+            <span>© 2026 {profile?.full_name || 'Muhammad Rafi'}</span>
           </div>
           <span>{t('footer.portfolio')}</span>
         </div>

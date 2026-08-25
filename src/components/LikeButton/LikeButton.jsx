@@ -1,78 +1,82 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
 import './LikeButton.css'
 
 export default function LikeButton() {
+  const initialLiked = localStorage.getItem('nerravs_has_liked') === 'true'
   const [likes, setLikes] = useState(0)
-  const [hasLiked, setHasLiked] = useState(false)
+  const [hasLiked, setHasLiked] = useState(initialLiked)
   const [animating, setAnimating] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
+  // Simpan nilai DB terbaru untuk rollback yang akurat
+  const dbCountRef = useRef(0)
 
   useEffect(() => {
-    const likedInStorage = localStorage.getItem('nerravs_has_liked') === 'true'
-    setHasLiked(likedInStorage)
-
     async function fetchLikes() {
-      try {
-        const { data, error } = await supabase
-          .from('site_like')
-          .select('count')
-          .eq('id', 'main')
-          .maybeSingle()
+      const { data, error } = await supabase
+        .from('site_like')
+        .select('count')
+        .eq('id', 'main')
+        .maybeSingle()
 
-        if (data && data.count !== undefined) {
-          setLikes(data.count)
-        } else if (error) {
-          console.error('Supabase fetch error:', error.message || error)
-        }
-      } catch (err) {
-        console.error('Error fetching likes:', err)
+      if (error) {
+        console.error('[LikeButton] fetch error:', error)
+        return
+      }
+
+      if (data) {
+        console.log('[LikeButton] fetched count:', data.count)
+        setLikes(data.count)
+        dbCountRef.current = data.count
+      } else {
+        console.warn('[LikeButton] row "main" not found in site_like table')
       }
     }
-
     fetchLikes()
   }, [])
 
+  const COOLDOWN_MS = 2000
+
   const handleLike = async () => {
-    // Cegah klik ganda yang cepat (spam klik) saat request sedang diproses
     if (isUpdating) return
+
+    const lastLikeTime = Number(localStorage.getItem('nerravs_last_like_time') || 0)
+    if (Date.now() - lastLikeTime < COOLDOWN_MS) return
 
     setIsUpdating(true)
     const isUndoing = hasLiked
-    const newLikes = isUndoing ? Math.max(0, likes - 1) : likes + 1
+    const newCount = isUndoing ? Math.max(0, dbCountRef.current - 1) : dbCountRef.current + 1
 
-    // Update state local agar instant (Optimistic Update)
-    setLikes(newLikes)
+    // Optimistic update
+    setLikes(newCount)
     setHasLiked(!isUndoing)
-    localStorage.setItem('nerravs_has_liked', (!isUndoing).toString())
+    localStorage.setItem('nerravs_has_liked', String(!isUndoing))
 
     if (!isUndoing) {
       setAnimating(true)
       setTimeout(() => setAnimating(false), 600)
     }
 
-    try {
-      const { error } = await supabase
-        .from('site_like')
-        .update({ count: newLikes })
-        .eq('id', 'main')
+    console.log('[LikeButton] updating count in DB:', newCount)
 
-      if (error) {
-        console.error('Supabase update error:', error.message || error)
-        // Rollback state jika query gagal
-        setLikes(likes)
-        setHasLiked(hasLiked)
-        localStorage.setItem('nerravs_has_liked', hasLiked.toString())
-      }
-    } catch (err) {
-      console.error('Error updating likes:', err)
-      // Rollback state
-      setLikes(likes)
-      setHasLiked(hasLiked)
-      localStorage.setItem('nerravs_has_liked', hasLiked.toString())
-    } finally {
-      setIsUpdating(false)
+    const { error } = await supabase
+      .from('site_like')
+      .update({ count: newCount })
+      .eq('id', 'main')
+
+    if (error) {
+      console.error('[LikeButton] update error:', error)
+      // Rollback ke nilai DB terakhir yang diketahui
+      setLikes(dbCountRef.current)
+      setHasLiked(isUndoing)
+      localStorage.setItem('nerravs_has_liked', String(isUndoing))
+    } else {
+      console.log('[LikeButton] saved to DB successfully:', newCount)
+      dbCountRef.current = newCount
+      localStorage.setItem('nerravs_last_like_time', String(Date.now()))
     }
+
+    setIsUpdating(false)
   }
 
   return (
@@ -99,3 +103,4 @@ export default function LikeButton() {
     </button>
   )
 }
+

@@ -16,6 +16,7 @@ import Footer from './components/Footer/Footer.jsx'
 import CVModal from './components/CVModal/CVModal.jsx'
 import heroImage from './assets/hero-photo.webp'
 import frontImage from './assets/front-photo.webp'
+import useSupabaseContent from './hooks/useSupabaseContent.js'
 import profileGif from './assets/profile.gif'
 import './App.css'
 
@@ -72,6 +73,8 @@ function ThemeIcon({ theme }) {
  */
 function App() {
   const { t, i18n } = useTranslation()
+  const profile = useSupabaseContent('profiles', { single: true })
+  const contentLanguage = i18n.resolvedLanguage === 'en' ? 'en' : 'id'
   const [loading, setLoading] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
   const [theme, setTheme] = useState(getInitialTheme)
@@ -170,7 +173,7 @@ function App() {
                 key={currentLanguage}
                 as="h1"
                 className="hero-headline"
-                text={t('hero.typingTexts', { returnObjects: true })}
+                text={profile?.[`tagline_${contentLanguage}`] ? [profile[`tagline_${contentLanguage}`]] : t('hero.typingTexts', { returnObjects: true })}
                 typingSpeed={65}
                 deletingSpeed={35}
                 pauseDuration={2500}
@@ -181,7 +184,7 @@ function App() {
                 startWhen={!loading}
               />
               <BlurText
-                text={t('hero.intro')}
+                text={profile?.[`about_${contentLanguage}`] || t('hero.intro')}
                 className="hero-sub"
                 delay={40}
                 animateBy="words"
@@ -244,7 +247,7 @@ function App() {
                   />
                   <img
                     className="hero-photo__main"
-                    src={heroImage}
+                    src={profile?.hero_url || profile?.photo_url || heroImage}
                     alt={t('hero.cameraAlt')}
                     width="900"
                     height="900"

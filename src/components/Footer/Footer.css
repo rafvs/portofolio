@@ -34,59 +34,98 @@
 .footer-contacts {
   display: flex;
   flex-direction: column;
+  gap: 0;
   border-top: 1px solid var(--border);
 }
 
 .footer-contact {
   display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  padding: 1.25rem 0;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
   border-bottom: 1px solid var(--border);
   color: var(--text);
   text-decoration: none;
-  transition: padding-left 0.2s ease;
+  transition: padding-left 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
 }
 
 .footer-contact:hover,
 .footer-contact:focus-visible {
-  padding-left: 0.75rem;
+  padding-left: 0.5rem;
 }
 
-.footer-contact__label {
+/* ── Icon wrapper: lingkaran kecil */
+.footer-contact__icon-wrap {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-muted);
   color: var(--text-secondary);
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.25s ease;
+}
+
+/* ── Animasi icon saat hover: bounce scale + glow */
+.footer-contact:hover .footer-contact__icon-wrap,
+.footer-contact:focus-visible .footer-contact__icon-wrap {
+  background: var(--solid, #fff);
+  border-color: transparent;
+  color: var(--on-solid, #0a0a0a);
+  transform: scale(1.18) rotate(-8deg);
+  box-shadow: 0 4px 16px -4px rgba(255, 255, 255, 0.25);
 }
 
 .footer-contact__icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-secondary);
-  transition: color 0.2s ease, transform 0.2s ease;
 }
 
-.footer-contact:hover .footer-contact__icon {
-  color: var(--text);
-  transform: scale(1.1);
-}
-
-.footer-contact strong {
+/* ── Nama platform */
+.footer-contact__name {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
   font-family: var(--font-display);
-  font-size: clamp(1rem, 2vw, 1.35rem);
+  font-size: clamp(0.95rem, 2vw, 1.2rem);
   font-weight: 500;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  transition: color 0.2s ease;
 }
 
-.footer-contact i {
-  color: var(--text-secondary);
-  font-style: normal;
+.footer-contact:hover .footer-contact__name {
+  color: var(--text);
 }
+
+/* ── Panah ↗ kecil yang meluncur saat hover */
+.footer-contact__arrow {
+  display: inline-block;
+  font-size: 0.75em;
+  color: var(--text-tertiary);
+  transform: translate(-4px, 4px);
+  opacity: 0;
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease;
+}
+
+.footer-contact:hover .footer-contact__arrow,
+.footer-contact:focus-visible .footer-contact__arrow {
+  transform: translate(0, 0);
+  opacity: 1;
+}
+
 
 .footer-header-brand {
   display: flex;

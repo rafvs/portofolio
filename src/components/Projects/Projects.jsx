@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import useInView from '../../hooks/useInView.js'
+import useSupabaseContent from '../../hooks/useSupabaseContent.js'
 import AccordionGallery from '../AccordionGallery/AccordionGallery.jsx'
 import BlurText from '../BlurText/BlurText.jsx'
 import ProjectModal from '../ProjectModal/ProjectModal.jsx'
@@ -53,7 +54,8 @@ const PROJECT_VISUALS = [
  * @returns {JSX.Element} Elemen section Projects.
  */
 const Projects = ({ className = '' }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const remoteProjects = useSupabaseContent('projects', { published: true })
   // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
   // kapan section Karya/Proyek masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -10% 0px' })
@@ -77,7 +79,20 @@ const Projects = ({ className = '' }) => {
     image: comingSoonImage,
     alt: t('projects.upcomingAlt'),
   }))
-  const galleryItems = [...projectItems, ...comingSoonItems]
+  const language = i18n.resolvedLanguage === 'en' ? 'en' : 'id'
+  const remoteItems = remoteProjects.map((project) => ({
+    key: project.slug || project.id,
+    label: project.title,
+    image: project.image_url || comingSoonImage,
+    screenshots: project.gallery?.length ? project.gallery : [project.image_url || comingSoonImage],
+    github: project.github_url,
+    description: project[`description_${language}`],
+    fullDescription: project[`full_description_${language}`],
+    stack: project.technologies || [],
+    features: project[`features_${language}`] || [],
+    alt: project.title,
+  }))
+  const galleryItems = remoteItems.length ? remoteItems : [...projectItems, ...comingSoonItems]
   const modalProject = galleryItems.find((project) => project.key === modalProjectKey) ?? null
 
   return (

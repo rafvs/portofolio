@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import useInView from '../../hooks/useInView.js'
+import useSupabaseContent from '../../hooks/useSupabaseContent.js'
 import SplitText from '../SplitText/SplitText.jsx'
 import './Experience.css'
 
@@ -11,8 +12,11 @@ import './Experience.css'
  * @returns {JSX.Element} Elemen section Experience.
  */
 const Experience = ({ frontImage, className = '' }) => {
-  const { t } = useTranslation()
-  const tags = t('experience.tags', { returnObjects: true })
+  const { t, i18n } = useTranslation()
+  const remoteExperiences = useSupabaseContent('experiences')
+  const language = i18n.resolvedLanguage === 'en' ? 'en' : 'id'
+  const experience = remoteExperiences[0]
+  const tags = experience?.tags || t('experience.tags', { returnObjects: true })
   // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
   // kapan kartu pengalaman masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -10% 0px' })
@@ -55,10 +59,10 @@ const Experience = ({ frontImage, className = '' }) => {
             
             {/* KONTEN DETAIL PENGALAMAN */}
             <div className="experience-card__content">
-              <p className="card-eyebrow">{t('experience.eyebrow')}</p>
-              <h3>{t('experience.role')}</h3>
-              <p className="card-period">{t('experience.period')}</p>
-              <p className="experience-card__summary">{t('experience.summary')}</p>
+              <p className="card-eyebrow">{experience?.organization || t('experience.eyebrow')}</p>
+              <h3>{experience?.[`role_${language}`] || t('experience.role')}</h3>
+              <p className="card-period">{experience?.period || t('experience.period')}</p>
+              <p className="experience-card__summary">{experience?.[`summary_${language}`] || t('experience.summary')}</p>
               
               {/* DAFTAR BIDANG/TAGS PENGALAMAN */}
               <div className="tag-list" aria-label={t('experience.tagsLabel')}>
@@ -70,7 +74,7 @@ const Experience = ({ frontImage, className = '' }) => {
                 - Menggunakan performa optimal dengan 'lazy' loading dan 'async' decoding.
                 - Efek hitam-putih (grayscale) diatur pada CSS dan bertransisi warna saat kartu di-hover. */}
             <div className="experience-card__image-wrap">
-              <img className="experience-card__image" src={frontImage} alt={t('experience.alt')} width="800" height="1000" loading="lazy" decoding="async" />
+              <img className="experience-card__image" src={experience?.image_url || frontImage} alt={t('experience.alt')} width="800" height="1000" loading="lazy" decoding="async" />
             </div>
           </div>
         </article>

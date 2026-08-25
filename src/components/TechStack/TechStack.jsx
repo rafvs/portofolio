@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import useInView from '../../hooks/useInView.js'
+import useSupabaseContent from '../../hooks/useSupabaseContent.js'
 import BlurText from '../BlurText/BlurText.jsx'
 import './TechStack.css'
 
@@ -154,9 +155,18 @@ const MARQUEE_STACK = [
  */
 const TechStack = ({ className = '' }) => {
   const { t } = useTranslation()
+  const remoteStack = useSupabaseContent('tech_stack')
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -10% 0px' })
 
-  const marqueeItems = [...MARQUEE_STACK, ...MARQUEE_STACK]
+  const remoteGroups = ['languages', 'frameworks', 'tools'].map((id) => ({
+    id,
+    labelKey: `techStack.${id}`,
+    labelFallback: id,
+    items: remoteStack.filter((item) => item.category === id).map((item) => ({ name: item.name, icon: item.icon_name })),
+  })).filter((group) => group.items.length)
+  const stackGroups = remoteGroups.length ? remoteGroups : STACK_GROUPS
+  const sourceMarquee = remoteStack.length ? remoteStack.map((item) => ({ name: item.name, icon: item.icon_name })) : MARQUEE_STACK
+  const marqueeItems = [...sourceMarquee, ...sourceMarquee]
 
   return (
     <section className={`stack${className ? ` ${className}` : ''}`} id="stack">
@@ -181,7 +191,7 @@ const TechStack = ({ className = '' }) => {
 
         {/* CARD GRID (3 kategori) */}
         <div className="stack-cards">
-          {STACK_GROUPS.map((group, gIdx) => (
+          {stackGroups.map((group, gIdx) => (
             <div className="stack-card" key={group.id}
               style={{ '--card-delay': `${gIdx * 0.1}s` }}>
               <p className="stack-card__label">

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import useInView from '../../hooks/useInView.js'
+import useSupabaseContent from '../../hooks/useSupabaseContent.js'
 import SplitText from '../SplitText/SplitText.jsx'
 import schoolPhoto from '../../assets/school-photo.webp'
 import schoolLogo from '../../assets/shcool logo.png'
@@ -12,8 +13,11 @@ import './Education.css'
  * @returns {JSX.Element} Elemen section Education.
  */
 const Education = ({ className = '' }) => {
-  const { t } = useTranslation()
-  const tags = t('education.tags', { returnObjects: true })
+  const { t, i18n } = useTranslation()
+  const remoteEducation = useSupabaseContent('education')
+  const language = i18n.resolvedLanguage === 'en' ? 'en' : 'id'
+  const education = remoteEducation[0]
+  const tags = education?.tags || t('education.tags', { returnObjects: true })
   // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
   // kapan kartu pendidikan masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -10% 0px' })
@@ -56,10 +60,10 @@ const Education = ({ className = '' }) => {
             
             {/* KONTEN DETAIL PENDIDIKAN */}
             <div className="education-card__content">
-              <p className="card-eyebrow">{t('education.eyebrow')}</p>
-              <h3>{t('education.school')}</h3>
-              <p className="card-period">{t('education.period')}</p>
-              <p className="education-card__summary">{t('education.summary')}</p>
+              <p className="card-eyebrow">{education?.[`major_${language}`] || t('education.eyebrow')}</p>
+              <h3>{education?.institution || t('education.school')}</h3>
+              <p className="card-period">{education?.period || t('education.period')}</p>
+              <p className="education-card__summary">{education?.[`summary_${language}`] || t('education.summary')}</p>
               
               {/* DAFTAR BIDANG/TAGS */}
               <div className="tag-list" aria-label={t('education.tagsLabel')}>
@@ -71,8 +75,8 @@ const Education = ({ className = '' }) => {
                 - Menggunakan performa optimal dengan 'lazy' loading dan 'async' decoding.
                 - Logo SMKN 7 disembunyikan secara default (opacity: 0) dan akan muncul membesar saat kartu di-hover (diatur di CSS). */}
             <div className="education-card__image-wrap">
-              <img className="education-card__image" src={schoolPhoto} alt={t('education.alt')} width="800" height="1201" loading="lazy" decoding="async" />
-              <img className="education-card__logo" src={schoolLogo} alt={t('education.logoAlt')} width="200" height="200" loading="lazy" decoding="async" />
+              <img className="education-card__image" src={education?.image_url || schoolPhoto} alt={t('education.alt')} width="800" height="1201" loading="lazy" decoding="async" />
+              <img className="education-card__logo" src={education?.logo_url || schoolLogo} alt={t('education.logoAlt')} width="200" height="200" loading="lazy" decoding="async" />
             </div>
           </div>
         </article>

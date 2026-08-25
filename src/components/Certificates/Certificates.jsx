@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import useInView from '../../hooks/useInView.js'
+import useSupabaseContent from '../../hooks/useSupabaseContent.js'
 import BlurText from '../BlurText/BlurText.jsx'
 import './Certificates.css'
 
@@ -11,6 +12,7 @@ import './Certificates.css'
  */
 const Certificates = ({ className = '' }) => {
   const { t } = useTranslation()
+  const certificates = useSupabaseContent('certificates')
   // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
   // kapan section Sertifikat masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -10% 0px' })
@@ -39,14 +41,14 @@ const Certificates = ({ className = '' }) => {
 
         {/* DATA SERTIFIKAT KOSONG (PLACEHOLDER):
             - Ditampilkan sebagai status sementara sebelum daftar sertifikat nyata dimasukkan. */}
-        <div className="certificate-empty reveal is-visible" aria-label={t('certificates.emptyLabel')}>
+        {certificates.length ? <div className="certificate-list">{certificates.map((certificate, index) => <a className="certificate-item reveal is-visible" href={certificate.url || certificate.image_url} target="_blank" rel="noreferrer" key={certificate.id}>{certificate.image_url && <img src={certificate.image_url} alt="" loading="lazy" />}<span>{String(index + 1).padStart(2, '0')}</span><div><h3>{certificate.title}</h3><p>{certificate.issuer} · {certificate.date}</p></div><b>↗</b></a>)}</div> : <div className="certificate-empty reveal is-visible" aria-label={t('certificates.emptyLabel')}>
           <span className="certificate-empty__number">01</span>
           <div>
             <h3>{t('certificates.empty')}</h3>
             <p>{t('certificates.emptyDescription')}</p>
           </div>
           <span className="certificate-empty__mark" aria-hidden="true">+</span>
-        </div>
+        </div>}
       </div>
     </section>
   )
