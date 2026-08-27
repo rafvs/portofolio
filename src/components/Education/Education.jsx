@@ -14,7 +14,11 @@ import './Education.css'
  */
 const Education = ({ className = '' }) => {
   const { t, i18n } = useTranslation()
+
+  // 📥 MENGAMBIL DATA DARI DATABASE SUPABASE:
+  // Memanggil custom hook useSupabaseContent untuk mengambil data dari tabel 'education'.
   const remoteEducation = useSupabaseContent('education')
+
   const language = i18n.resolvedLanguage === 'en' ? 'en' : 'id'
   const education = remoteEducation[0]
   const tags = education?.tags || t('education.tags', { returnObjects: true })

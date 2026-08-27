@@ -55,7 +55,12 @@ const PROJECT_VISUALS = [
  */
 const Projects = ({ className = '' }) => {
   const { t, i18n } = useTranslation()
+  
+  // 📥 MENGAMBIL DATA DARI DATABASE SUPABASE:
+  // Memanggil custom hook useSupabaseContent untuk mengambil data dari tabel 'projects'
+  // dengan opsi { published: true } (hanya proyek yang berstatus is_published = true di Supabase).
   const remoteProjects = useSupabaseContent('projects', { published: true })
+
   // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
   // kapan section Karya/Proyek masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -10% 0px' })

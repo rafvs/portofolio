@@ -155,7 +155,11 @@ const MARQUEE_STACK = [
  */
 const TechStack = ({ className = '' }) => {
   const { t } = useTranslation()
+
+  // 📥 MENGAMBIL DATA DARI DATABASE SUPABASE:
+  // Memanggil custom hook useSupabaseContent untuk mengambil data teknologi & tools dari tabel 'tech_stack'.
   const remoteStack = useSupabaseContent('tech_stack')
+
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -10% 0px' })
 
   const remoteGroups = ['languages', 'frameworks', 'tools'].map((id) => ({

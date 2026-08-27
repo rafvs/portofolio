@@ -13,7 +13,11 @@ import './Experience.css'
  */
 const Experience = ({ frontImage, className = '' }) => {
   const { t, i18n } = useTranslation()
+
+  // 📥 MENGAMBIL DATA DARI DATABASE SUPABASE:
+  // Memanggil custom hook useSupabaseContent untuk mengambil data dari tabel 'experiences'.
   const remoteExperiences = useSupabaseContent('experiences')
+
   const language = i18n.resolvedLanguage === 'en' ? 'en' : 'id'
   const experience = remoteExperiences[0]
   const tags = experience?.tags || t('experience.tags', { returnObjects: true })

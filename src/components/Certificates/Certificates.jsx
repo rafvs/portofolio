@@ -12,7 +12,11 @@ import './Certificates.css'
  */
 const Certificates = ({ className = '' }) => {
   const { t } = useTranslation()
+
+  // 📥 MENGAMBIL DATA DARI DATABASE SUPABASE:
+  // Memanggil custom hook useSupabaseContent untuk mengambil daftar sertifikat dari tabel 'certificates'.
   const certificates = useSupabaseContent('certificates')
+
   // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
   // kapan section Sertifikat masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -10% 0px' })

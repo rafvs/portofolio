@@ -73,7 +73,11 @@ function ThemeIcon({ theme }) {
  */
 function App() {
   const { t, i18n } = useTranslation()
+
+  // 📥 MENGAMBIL DATA DARI DATABASE SUPABASE:
+  // Memanggil custom hook useSupabaseContent untuk mengambil data profil personal dari tabel 'profiles'.
   const profile = useSupabaseContent('profiles', { single: true })
+
   const contentLanguage = i18n.resolvedLanguage === 'en' ? 'en' : 'id'
   const [loading, setLoading] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)

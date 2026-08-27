@@ -62,7 +62,11 @@ const CONTACT_ITEMS = [
  */
 const Footer = ({ className = '' }) => {
   const { t } = useTranslation()
+
+  // 📥 MENGAMBIL DATA DARI DATABASE SUPABASE:
+  // Memanggil custom hook useSupabaseContent untuk mengambil 1 baris data profil sosial dari tabel 'profiles'.
   const profile = useSupabaseContent('profiles', { single: true })
+
   // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
   // kapan footer masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -5% 0px' })
