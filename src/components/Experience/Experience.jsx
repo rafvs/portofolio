@@ -19,11 +19,20 @@ const Experience = ({ frontImage, className = '' }) => {
   const remoteExperiences = useSupabaseContent('experiences')
 
   const language = i18n.resolvedLanguage === 'en' ? 'en' : 'id'
-  const experience = remoteExperiences[0]
-  const tags = experience?.tags || t('experience.tags', { returnObjects: true })
-  // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
-  // kapan kartu pengalaman masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -10% 0px' })
+
+  const experienceList = remoteExperiences && remoteExperiences.length > 0
+    ? remoteExperiences
+    : [
+        {
+          organization: t('experience.eyebrow'),
+          [`role_${language}`]: t('experience.role'),
+          period: t('experience.period'),
+          [`summary_${language}`]: t('experience.summary'),
+          tags: t('experience.tags', { returnObjects: true }),
+          image_url: frontImage,
+        },
+      ]
 
   return (
     <section className={`experience${className ? ` ${className}` : ''}`} id="pengalaman">
@@ -51,37 +60,52 @@ const Experience = ({ frontImage, className = '' }) => {
           </div>
         </div>
 
-        {/* KARTU PENGALAMAN (EXPERIENCE CARD):
-            - Menggunakan class 'reveal' yang ditambahkan 'is-visible' secara reaktif saat hook useInView terpicu (reveal = true).
-            - Menggunakan ref 'revealRef' untuk memantau elemen ini. */}
-        <article className={`experience-card cursor-target reveal${reveal ? ' is-visible' : ''}`} ref={revealRef}>
-          <div className="experience-card__topline">
-            <span className="experience-card__number">01</span>
-            <span className="status-badge"><i /> {t('experience.status')}</span>
-          </div>
-          <div className="experience-card__body">
-            
-            {/* KONTEN DETAIL PENGALAMAN */}
-            <div className="experience-card__content">
-              <p className="card-eyebrow">{experience?.organization || t('experience.eyebrow')}</p>
-              <h3>{experience?.[`role_${language}`] || t('experience.role')}</h3>
-              <p className="card-period">{experience?.period || t('experience.period')}</p>
-              <p className="experience-card__summary">{experience?.[`summary_${language}`] || t('experience.summary')}</p>
-              
-              {/* DAFTAR BIDANG/TAGS PENGALAMAN */}
-              <div className="tag-list" aria-label={t('experience.tagsLabel')}>
-                {tags.map((tag) => <span key={tag}>{tag}</span>)}
-              </div>
-            </div>
+        {/* DAFTAR KARTU PENGALAMAN (EXPERIENCE CARDS):
+            - Menggunakan class 'reveal' yang ditambahkan 'is-visible' secara reaktif saat hook useInView terpicu (reveal = true). */}
+        <div className={`experience-list reveal${reveal ? ' is-visible' : ''}`} ref={revealRef}>
+          {experienceList.map((item, index) => {
+            const tags = Array.isArray(item.tags)
+              ? item.tags
+              : (item.tags || (item.id ? [] : t('experience.tags', { returnObjects: true })))
+            const role = item[`role_${language}`] || item.role_id || item.role || t('experience.role')
+            const summary = item[`summary_${language}`] || item.summary_id || item.summary || t('experience.summary')
+            const organization = item.organization || t('experience.eyebrow')
+            const period = item.period || t('experience.period')
+            const status = item[`status_${language}`] || item.status_id || item.status || t('experience.status')
+            const image = item.image_url || frontImage
 
-            {/* FOTO DOKUMENTASI KEGIATAN:
-                - Menggunakan performa optimal dengan 'lazy' loading dan 'async' decoding.
-                - Efek hitam-putih (grayscale) diatur pada CSS dan bertransisi warna saat kartu di-hover. */}
-            <div className="experience-card__image-wrap">
-              <img className="experience-card__image" src={experience?.image_url || frontImage} alt={t('experience.alt')} width="800" height="1000" loading="lazy" decoding="async" />
-            </div>
-          </div>
-        </article>
+            return (
+              <article key={item.id || index} className="experience-card cursor-target">
+                <div className="experience-card__topline">
+                  <span className="experience-card__number">{String(index + 1).padStart(2, '0')}</span>
+                  <span className="status-badge"><i /> {status}</span>
+                </div>
+                <div className="experience-card__body">
+                  
+                  {/* KONTEN DETAIL PENGALAMAN */}
+                  <div className="experience-card__content">
+                    <p className="card-eyebrow">{organization}</p>
+                    <h3>{role}</h3>
+                    <p className="card-period">{period}</p>
+                    <p className="experience-card__summary">{summary}</p>
+                    
+                    {/* DAFTAR BIDANG/TAGS PENGALAMAN */}
+                    {Array.isArray(tags) && tags.length > 0 && (
+                      <div className="tag-list" aria-label={t('experience.tagsLabel')}>
+                        {tags.map((tag) => <span key={tag}>{tag}</span>)}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* FOTO DOKUMENTASI KEGIATAN */}
+                  <div className="experience-card__image-wrap">
+                    <img className="experience-card__image" src={image} alt={t('experience.alt')} width="800" height="1000" loading="lazy" decoding="async" />
+                  </div>
+                </div>
+              </article>
+            )
+          })}
+        </div>
       </div>
     </section>
   )

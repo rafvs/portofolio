@@ -20,11 +20,22 @@ const Education = ({ className = '' }) => {
   const remoteEducation = useSupabaseContent('education')
 
   const language = i18n.resolvedLanguage === 'en' ? 'en' : 'id'
-  const education = remoteEducation[0]
-  const tags = education?.tags || t('education.tags', { returnObjects: true })
-  // INTERAKSI ANIMASI (VIEWPORT DETECT): Menggunakan custom hook useInView untuk mendeteksi
-  // kapan kartu pendidikan masuk ke viewport. Status 'reveal' akan bernilai true ketika masuk.
   const [revealRef, reveal] = useInView({ once: true, rootMargin: '-10% 0px -10% 0px' })
+
+  // Jika remoteEducation ada isinya, gunakan data Supabase. Jika belum, gunakan fallback data default.
+  const educationList = remoteEducation && remoteEducation.length > 0
+    ? remoteEducation
+    : [
+        {
+          institution: t('education.school'),
+          [`major_${language}`]: t('education.eyebrow'),
+          period: t('education.period'),
+          [`summary_${language}`]: t('education.summary'),
+          tags: t('education.tags', { returnObjects: true }),
+          image_url: schoolPhoto,
+          logo_url: schoolLogo,
+        },
+      ]
 
   return (
     <section className={`education${className ? ` ${className}` : ''}`} id="education">
@@ -52,38 +63,54 @@ const Education = ({ className = '' }) => {
           </div>
         </div>
 
-        {/* KARTU PENDIDIKAN (EDUCATION CARD):
-            - Menggunakan class 'reveal' yang ditambahkan 'is-visible' secara reaktif saat hook useInView terpicu (reveal = true).
-            - Menggunakan ref 'revealRef' untuk memantau elemen ini. */}
-        <article className={`education-card cursor-target reveal${reveal ? ' is-visible' : ''}`} ref={revealRef}>
-          <div className="education-card__topline">
-            <span className="education-card__number">01</span>
-            <span className="status-badge"><i /> {t('education.status')}</span>
-          </div>
-          <div className="education-card__body">
-            
-            {/* KONTEN DETAIL PENDIDIKAN */}
-            <div className="education-card__content">
-              <p className="card-eyebrow">{education?.[`major_${language}`] || t('education.eyebrow')}</p>
-              <h3>{education?.institution || t('education.school')}</h3>
-              <p className="card-period">{education?.period || t('education.period')}</p>
-              <p className="education-card__summary">{education?.[`summary_${language}`] || t('education.summary')}</p>
-              
-              {/* DAFTAR BIDANG/TAGS */}
-              <div className="tag-list" aria-label={t('education.tagsLabel')}>
-                {tags.map((tag) => <span key={tag}>{tag}</span>)}
-              </div>
-            </div>
+        {/* DAFTAR KARTU PENDIDIKAN (EDUCATION CARDS):
+            - Menggunakan class 'reveal' yang ditambahkan 'is-visible' secara reaktif saat hook useInView terpicu (reveal = true). */}
+        <div className={`education-list reveal${reveal ? ' is-visible' : ''}`} ref={revealRef}>
+          {educationList.map((item, index) => {
+            const tags = Array.isArray(item.tags)
+              ? item.tags
+              : (item.tags || (item.id ? [] : t('education.tags', { returnObjects: true })))
+            const major = item[`major_${language}`] || item.major_id || item.major || t('education.eyebrow')
+            const summary = item[`summary_${language}`] || item.summary_id || item.summary || t('education.summary')
+            const institution = item.institution || t('education.school')
+            const period = item.period || t('education.period')
+            const status = item[`status_${language}`] || item.status_id || item.status || t('education.status')
+            const image = item.image_url || schoolPhoto
+            const logo = item.logo_url || schoolLogo
 
-            {/* FOTO & LOGO SEKOLAH:
-                - Menggunakan performa optimal dengan 'lazy' loading dan 'async' decoding.
-                - Logo SMKN 7 disembunyikan secara default (opacity: 0) dan akan muncul membesar saat kartu di-hover (diatur di CSS). */}
-            <div className="education-card__image-wrap">
-              <img className="education-card__image" src={education?.image_url || schoolPhoto} alt={t('education.alt')} width="800" height="1201" loading="lazy" decoding="async" />
-              <img className="education-card__logo" src={education?.logo_url || schoolLogo} alt={t('education.logoAlt')} width="200" height="200" loading="lazy" decoding="async" />
-            </div>
-          </div>
-        </article>
+            return (
+              <article key={item.id || index} className="education-card cursor-target">
+                <div className="education-card__topline">
+                  <span className="education-card__number">{String(index + 1).padStart(2, '0')}</span>
+                  <span className="status-badge"><i /> {status}</span>
+                </div>
+                <div className="education-card__body">
+                  
+                  {/* KONTEN DETAIL PENDIDIKAN */}
+                  <div className="education-card__content">
+                    <p className="card-eyebrow">{major}</p>
+                    <h3>{institution}</h3>
+                    <p className="card-period">{period}</p>
+                    <p className="education-card__summary">{summary}</p>
+                    
+                    {/* DAFTAR BIDANG/TAGS */}
+                    {Array.isArray(tags) && tags.length > 0 && (
+                      <div className="tag-list" aria-label={t('education.tagsLabel')}>
+                        {tags.map((tag) => <span key={tag}>{tag}</span>)}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* FOTO & LOGO SEKOLAH */}
+                  <div className="education-card__image-wrap">
+                    <img className="education-card__image" src={image} alt={t('education.alt')} width="800" height="1201" loading="lazy" decoding="async" />
+                    <img className="education-card__logo" src={logo} alt={t('education.logoAlt')} width="200" height="200" loading="lazy" decoding="async" />
+                  </div>
+                </div>
+              </article>
+            )
+          })}
+        </div>
       </div>
     </section>
   )

@@ -3,6 +3,12 @@
   scroll-margin-top: 74px;
 }
 
+.experience-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
 .experience-card {
   border: 1px solid var(--border);
   background: var(--surface);
